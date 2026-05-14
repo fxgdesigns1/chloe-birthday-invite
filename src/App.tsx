@@ -4,12 +4,15 @@ import { Environment, MeshTransmissionMaterial, Stars } from '@react-three/drei'
 import { gsap } from 'gsap';
 import {
   CalendarDays,
+  Camera,
   Clock,
   MapPin,
   MessageCircle,
+  Music2,
   ShieldAlert,
   Sparkles,
   UserRoundCheck,
+  Video,
 } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -27,7 +30,7 @@ const eventDetails = [
   {
     icon: MapPin,
     label: 'LOCATION',
-    value: 'Sion Spaces, within Black Kitchen, 426-428 Streatham High Road, London, SW16 3PX',
+    value: 'Cyan Lounge, Sion Spaces, within Black Kitchen, 426-428 Streatham High Road, London, SW16 3PX',
   },
   {
     icon: UserRoundCheck,
@@ -38,6 +41,24 @@ const eventDetails = [
     icon: Sparkles,
     label: 'VIBE',
     value: 'Midnight Luxury. High Energy.',
+  },
+];
+
+const experienceMoments = [
+  {
+    icon: Music2,
+    title: 'DJ Pressure',
+    copy: 'A high-energy midnight soundtrack built for the surprise reveal and the turn up after.',
+  },
+  {
+    icon: Camera,
+    title: 'Flash Evidence',
+    copy: 'Photobooth and photographer moments framed like classified snapshots from the night.',
+  },
+  {
+    icon: Video,
+    title: 'Chloe Reel',
+    copy: 'A cinematic hero sequence can drop in once we have 6-10 strong Chloe photos or a short video.',
   },
 ];
 
@@ -201,6 +222,86 @@ function VaultCore({ decrypted }: VaultSceneProps) {
   );
 }
 
+function CyanLoungeHologram({ active }: { active: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const scanRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state, delta) => {
+    if (!groupRef.current) {
+      return;
+    }
+
+    groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.22) * 0.08;
+    groupRef.current.position.y = -0.8 + Math.sin(state.clock.elapsedTime * 0.7) * 0.035;
+
+    if (scanRef.current) {
+      scanRef.current.position.z = ((state.clock.elapsedTime * 1.2) % 5.2) - 2.6;
+    }
+
+    if (active) {
+      groupRef.current.rotation.y += delta * 0.08;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, -0.94, -0.65]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.62, 0]}>
+        <planeGeometry args={[8.5, 7.2, 18, 18]} />
+        <meshStandardMaterial
+          color="#041016"
+          emissive="#002d3f"
+          emissiveIntensity={0.42}
+          wireframe
+          transparent
+          opacity={0.34}
+        />
+      </mesh>
+      <mesh position={[0, -0.25, -1.2]}>
+        <boxGeometry args={[3.7, 0.55, 0.9]} />
+        <meshStandardMaterial
+          color="#06131a"
+          emissive="#00b8ff"
+          emissiveIntensity={0.44}
+          roughness={0.34}
+          metalness={0.68}
+        />
+      </mesh>
+      <mesh position={[0, 0.16, -1.63]}>
+        <boxGeometry args={[3.25, 0.11, 0.08]} />
+        <meshStandardMaterial color="#72f5ff" emissive="#00e7ff" emissiveIntensity={2.6} />
+      </mesh>
+      {[-1.45, -0.72, 0, 0.72, 1.45].map((x) => (
+        <mesh key={x} position={[x, 0.18, -1.22]}>
+          <cylinderGeometry args={[0.08, 0.1, 0.56, 16]} />
+          <meshStandardMaterial
+            color={x === 0 ? '#f7c86d' : '#5feaff'}
+            emissive={x === 0 ? '#e9a629' : '#00d5ff'}
+            emissiveIntensity={1.7}
+            transparent
+            opacity={0.86}
+          />
+        </mesh>
+      ))}
+      {[-2.8, 2.8].map((x) => (
+        <group key={x} position={[x, -0.05, -0.35]}>
+          <mesh>
+            <cylinderGeometry args={[0.08, 0.08, 1.92, 18]} />
+            <meshStandardMaterial color="#0b2029" emissive="#00cfff" emissiveIntensity={0.55} />
+          </mesh>
+          <mesh position={[0, 1.02, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.05, 0.05, 1.45, 18]} />
+            <meshStandardMaterial color="#73ecff" emissive="#00e5ff" emissiveIntensity={2.3} />
+          </mesh>
+        </group>
+      ))}
+      <mesh ref={scanRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.49, -2]}>
+        <planeGeometry args={[7.2, 0.06]} />
+        <meshBasicMaterial color="#9df7ff" transparent opacity={0.72} />
+      </mesh>
+    </group>
+  );
+}
+
 function Scene({ decrypted }: VaultSceneProps) {
   return (
     <Canvas camera={{ position: [0, 0.22, 4.4], fov: 46 }} dpr={[1, 1.8]}>
@@ -211,6 +312,7 @@ function Scene({ decrypted }: VaultSceneProps) {
       <pointLight position={[-3.2, -2.2, 2.4]} intensity={2} color="#d9a441" />
       <Stars radius={32} depth={20} count={1200} factor={3.2} fade speed={0.45} />
       <VaultCore decrypted={decrypted} />
+      <CyanLoungeHologram active={decrypted} />
       <Environment preset="night" />
     </Canvas>
   );
@@ -241,11 +343,17 @@ function App() {
         { autoAlpha: 1, y: 0, duration: 0.62, ease: 'power3.out' },
         '+=0.68',
       )
+        .fromTo(
+          details,
+          { autoAlpha: 0, y: 22 },
+          { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.52, ease: 'power3.out' },
+          '-=0.2',
+      )
       .fromTo(
-        details,
-        { autoAlpha: 0, y: 22 },
-        { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.52, ease: 'power3.out' },
-        '-=0.2',
+        '.scan-line',
+        { scaleX: 0, transformOrigin: 'left center' },
+        { scaleX: 1, duration: 0.78, stagger: 0.12, ease: 'power3.out' },
+        '-=0.42',
       );
   }, [decrypted]);
 
@@ -268,7 +376,7 @@ function App() {
 
       <section ref={revealRef} className="dossier" aria-label="Decrypted event invitation">
         <div className="dossier-header stagger-in">
-          <p className="eyebrow">DECRYPTED // STRICTLY CONFIDENTIAL</p>
+          <p className="eyebrow">DECRYPTED // CYAN LOUNGE ACCESS</p>
           <h2>Chloe&apos;s Surprise Birthday Party</h2>
           <p>Do not tell Chloe. If you see her beforehand, keep this locked down.</p>
         </div>
@@ -288,6 +396,36 @@ function App() {
                   <p>{detail.label}</p>
                   <strong>{detail.value}</strong>
                 </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="venue-brief stagger-in">
+          <div>
+            <p className="eyebrow">VENUE SCAN // MIDNIGHT LUXURY</p>
+            <h3>Cyan Lounge Mode</h3>
+            <p>
+              The invite now opens like a digital vault, then resolves into a cyan-lit lounge briefing:
+              neon bar glow, gold security lines, glass panels, and a premium party dossier.
+            </p>
+          </div>
+          <div className="scan-stack" aria-hidden="true">
+            <span className="scan-line" />
+            <span className="scan-line" />
+            <span className="scan-line" />
+            <span className="scan-line" />
+          </div>
+        </div>
+
+        <div className="experience-grid">
+          {experienceMoments.map((moment) => {
+            const Icon = moment.icon;
+            return (
+              <article className="experience-card stagger-in" key={moment.title}>
+                <Icon size={23} aria-hidden="true" />
+                <h3>{moment.title}</h3>
+                <p>{moment.copy}</p>
               </article>
             );
           })}

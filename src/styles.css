@@ -53,7 +53,9 @@ body {
   pointer-events: none;
   background:
     linear-gradient(90deg, rgba(3, 5, 8, 0.92), transparent 22%, transparent 78%, rgba(3, 5, 8, 0.88)),
-    linear-gradient(180deg, rgba(3, 5, 8, 0.34), rgba(3, 5, 8, 0.06) 42%, rgba(3, 5, 8, 0.86));
+    linear-gradient(180deg, rgba(3, 5, 8, 0.34), rgba(3, 5, 8, 0.06) 42%, rgba(3, 5, 8, 0.86)),
+    radial-gradient(circle at 18% 78%, rgba(0, 222, 255, 0.16), transparent 22rem),
+    radial-gradient(circle at 83% 24%, rgba(246, 198, 105, 0.12), transparent 24rem);
 }
 
 .intro-panel,
@@ -179,6 +181,8 @@ h1 {
 
 .warning-strip,
 .detail-card,
+.venue-brief,
+.experience-card,
 .action-row {
   border: 1px solid rgba(143, 203, 255, 0.24);
   border-radius: 8px;
@@ -205,6 +209,107 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.venue-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(220px, 0.85fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-top: 14px;
+  padding: 18px;
+  background:
+    linear-gradient(135deg, rgba(2, 28, 40, 0.8), rgba(7, 13, 22, 0.64)),
+    rgba(7, 13, 22, 0.66);
+}
+
+.venue-brief h3,
+.experience-card h3 {
+  margin: 5px 0 8px;
+  color: #ffffff;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  letter-spacing: 0;
+}
+
+.venue-brief p:last-child,
+.experience-card p {
+  margin-bottom: 0;
+  color: #c6d5e4;
+}
+
+.scan-stack {
+  position: relative;
+  min-height: 168px;
+  overflow: hidden;
+  border: 1px solid rgba(121, 235, 255, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(0, 222, 255, 0.12), transparent 45%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(119, 240, 255, 0.08) 0,
+      rgba(119, 240, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 15px
+    ),
+    rgba(3, 8, 12, 0.58);
+}
+
+.scan-stack::before,
+.scan-stack::after {
+  position: absolute;
+  content: "";
+  inset: 28px 36px;
+  border: 1px solid rgba(246, 198, 105, 0.38);
+  transform: skew(-12deg);
+}
+
+.scan-stack::after {
+  inset: 58px 70px;
+  border-color: rgba(104, 234, 255, 0.34);
+  transform: skew(14deg);
+}
+
+.scan-line {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8df6ff, #f6c76b, transparent);
+  box-shadow: 0 0 18px rgba(111, 235, 255, 0.72);
+}
+
+.scan-line:nth-child(1) {
+  top: 26px;
+}
+
+.scan-line:nth-child(2) {
+  top: 66px;
+}
+
+.scan-line:nth-child(3) {
+  top: 106px;
+}
+
+.scan-line:nth-child(4) {
+  top: 146px;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.experience-card {
+  min-height: 174px;
+  padding: 18px;
+}
+
+.experience-card svg {
+  color: #6defff;
+  filter: drop-shadow(0 0 16px rgba(0, 222, 255, 0.48));
 }
 
 .detail-card {
@@ -283,6 +388,19 @@ h1 {
 
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .venue-brief,
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .venue-brief {
+    padding: 16px;
+  }
+
+  .scan-stack {
+    min-height: 132px;
   }
 
   .detail-card {
