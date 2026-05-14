@@ -182,9 +182,9 @@ function VaultCore({ decrypted }: VaultSceneProps) {
       <mesh ref={coreRef}>
         <icosahedronGeometry args={[1.35, 1]} />
         <MeshTransmissionMaterial
-          color="#74c7ff"
-          emissive="#0f6fff"
-          emissiveIntensity={0.52}
+          color="#ff8a2a"
+          emissive="#ff5d0a"
+          emissiveIntensity={0.68}
           opacity={0.78}
           transparent
           roughness={0.22}
@@ -194,7 +194,7 @@ function VaultCore({ decrypted }: VaultSceneProps) {
       </mesh>
       <lineSegments>
         <edgesGeometry args={[new THREE.IcosahedronGeometry(1.42, 1)]} />
-        <lineBasicMaterial color="#f6c76b" transparent opacity={0.62} />
+        <lineBasicMaterial color="#ffb36d" transparent opacity={0.7} />
       </lineSegments>
       {shards.map((shard, index) => (
         <mesh
@@ -210,8 +210,8 @@ function VaultCore({ decrypted }: VaultSceneProps) {
         >
           <tetrahedronGeometry args={[1, 0]} />
           <meshStandardMaterial
-            color={index % 3 === 0 ? '#f8c76d' : '#6bd7ff'}
-            emissive={index % 3 === 0 ? '#b87513' : '#005dff'}
+            color={index % 3 === 0 ? '#ff8a2a' : '#6bd7ff'}
+            emissive={index % 3 === 0 ? '#ff5d0a' : '#005dff'}
             emissiveIntensity={1.1}
             transparent
             opacity={0}
@@ -249,8 +249,8 @@ function CyanLoungeHologram({ active }: { active: boolean }) {
         <planeGeometry args={[8.5, 7.2, 18, 18]} />
         <meshStandardMaterial
           color="#041016"
-          emissive="#002d3f"
-          emissiveIntensity={0.42}
+          emissive="#3a1606"
+          emissiveIntensity={0.48}
           wireframe
           transparent
           opacity={0.34}
@@ -260,22 +260,22 @@ function CyanLoungeHologram({ active }: { active: boolean }) {
         <boxGeometry args={[3.7, 0.55, 0.9]} />
         <meshStandardMaterial
           color="#06131a"
-          emissive="#00b8ff"
-          emissiveIntensity={0.44}
+          emissive="#ff6d13"
+          emissiveIntensity={0.52}
           roughness={0.34}
           metalness={0.68}
         />
       </mesh>
       <mesh position={[0, 0.16, -1.63]}>
         <boxGeometry args={[3.25, 0.11, 0.08]} />
-        <meshStandardMaterial color="#72f5ff" emissive="#00e7ff" emissiveIntensity={2.6} />
+        <meshStandardMaterial color="#ffb36d" emissive="#ff6d13" emissiveIntensity={2.8} />
       </mesh>
       {[-1.45, -0.72, 0, 0.72, 1.45].map((x) => (
         <mesh key={x} position={[x, 0.18, -1.22]}>
           <cylinderGeometry args={[0.08, 0.1, 0.56, 16]} />
           <meshStandardMaterial
             color={x === 0 ? '#f7c86d' : '#5feaff'}
-            emissive={x === 0 ? '#e9a629' : '#00d5ff'}
+            emissive={x === 0 ? '#ff6d13' : '#00d5ff'}
             emissiveIntensity={1.7}
             transparent
             opacity={0.86}
@@ -286,17 +286,17 @@ function CyanLoungeHologram({ active }: { active: boolean }) {
         <group key={x} position={[x, -0.05, -0.35]}>
           <mesh>
             <cylinderGeometry args={[0.08, 0.08, 1.92, 18]} />
-            <meshStandardMaterial color="#0b2029" emissive="#00cfff" emissiveIntensity={0.55} />
+          <meshStandardMaterial color="#0b2029" emissive="#ff6d13" emissiveIntensity={0.55} />
           </mesh>
           <mesh position={[0, 1.02, 0]} rotation={[0, 0, Math.PI / 2]}>
             <cylinderGeometry args={[0.05, 0.05, 1.45, 18]} />
-            <meshStandardMaterial color="#73ecff" emissive="#00e5ff" emissiveIntensity={2.3} />
+            <meshStandardMaterial color="#ffb36d" emissive="#ff6d13" emissiveIntensity={2.3} />
           </mesh>
         </group>
       ))}
       <mesh ref={scanRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.49, -2]}>
         <planeGeometry args={[7.2, 0.06]} />
-        <meshBasicMaterial color="#9df7ff" transparent opacity={0.72} />
+        <meshBasicMaterial color="#ff9d42" transparent opacity={0.74} />
       </mesh>
     </group>
   );
@@ -308,8 +308,8 @@ function Scene({ decrypted }: VaultSceneProps) {
       <color attach="background" args={['#030508']} />
       <fog attach="fog" args={['#030508', 4.2, 9]} />
       <ambientLight intensity={0.42} />
-      <pointLight position={[2.4, 2.8, 3.6]} intensity={2.4} color="#4ea7ff" />
-      <pointLight position={[-3.2, -2.2, 2.4]} intensity={2} color="#d9a441" />
+      <pointLight position={[2.4, 2.8, 3.6]} intensity={2.2} color="#4ea7ff" />
+      <pointLight position={[-3.2, -2.2, 2.4]} intensity={2.4} color="#ff7a18" />
       <Stars radius={32} depth={20} count={1200} factor={3.2} fade speed={0.45} />
       <VaultCore decrypted={decrypted} />
       <CyanLoungeHologram active={decrypted} />

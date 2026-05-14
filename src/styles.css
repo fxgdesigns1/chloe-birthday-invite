@@ -1,4 +1,9 @@
 :root {
+  --chloe-orange: #ff7a18;
+  --chloe-orange-soft: #ff9d42;
+  --chloe-orange-deep: #8f3108;
+  --vault-cyan: #7cecff;
+  --vault-gold: #f6c76b;
   color: #f8fbff;
   background: #030508;
   font-family:
@@ -36,8 +41,9 @@ body {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 42%, rgba(0, 105, 255, 0.16), transparent 28rem),
-    linear-gradient(135deg, #030508 0%, #080b11 54%, #120d08 100%);
+    radial-gradient(circle at 50% 42%, rgba(0, 105, 255, 0.14), transparent 28rem),
+    radial-gradient(circle at 78% 68%, rgba(255, 122, 24, 0.18), transparent 25rem),
+    linear-gradient(135deg, #030508 0%, #080b11 52%, #180a03 100%);
 }
 
 .scene-wrap {
@@ -55,7 +61,7 @@ body {
     linear-gradient(90deg, rgba(3, 5, 8, 0.92), transparent 22%, transparent 78%, rgba(3, 5, 8, 0.88)),
     linear-gradient(180deg, rgba(3, 5, 8, 0.34), rgba(3, 5, 8, 0.06) 42%, rgba(3, 5, 8, 0.86)),
     radial-gradient(circle at 18% 78%, rgba(0, 222, 255, 0.16), transparent 22rem),
-    radial-gradient(circle at 83% 24%, rgba(246, 198, 105, 0.12), transparent 24rem);
+    radial-gradient(circle at 83% 24%, rgba(255, 122, 24, 0.18), transparent 24rem);
 }
 
 .intro-panel,
@@ -81,7 +87,7 @@ body {
 
 .eyebrow {
   margin: 0;
-  color: #9fcfff;
+  color: #ffb36d;
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -101,7 +107,7 @@ h1 {
   letter-spacing: 0;
   text-shadow:
     0 0 22px rgba(76, 165, 255, 0.62),
-    0 0 62px rgba(229, 181, 87, 0.2);
+    0 0 58px rgba(255, 122, 24, 0.34);
 }
 
 .intro-copy {
@@ -121,11 +127,11 @@ h1 {
   border-radius: 8px;
   color: #ffffff;
   background:
-    linear-gradient(135deg, rgba(0, 119, 255, 0.95), rgba(19, 70, 135, 0.72)),
+    linear-gradient(135deg, rgba(255, 122, 24, 0.96), rgba(0, 119, 255, 0.78)),
     rgba(6, 18, 36, 0.72);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 0 34px rgba(0, 119, 255, 0.42);
+    0 0 34px rgba(255, 122, 24, 0.38);
   cursor: pointer;
   font-weight: 900;
   letter-spacing: 0;
@@ -148,7 +154,7 @@ h1 {
   border-color: rgba(247, 198, 105, 0.88);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-    0 0 42px rgba(246, 198, 105, 0.36);
+    0 0 42px rgba(255, 122, 24, 0.46);
 }
 
 .dossier {
@@ -200,8 +206,8 @@ h1 {
   margin-bottom: 18px;
   padding: 14px 16px;
   color: #ffe6a8;
-  background: linear-gradient(135deg, rgba(91, 20, 20, 0.78), rgba(16, 16, 22, 0.72));
-  border-color: rgba(255, 208, 110, 0.42);
+  background: linear-gradient(135deg, rgba(143, 49, 8, 0.84), rgba(32, 10, 5, 0.76));
+  border-color: rgba(255, 157, 66, 0.56);
   font-weight: 900;
 }
 
@@ -219,7 +225,7 @@ h1 {
   margin-top: 14px;
   padding: 18px;
   background:
-    linear-gradient(135deg, rgba(2, 28, 40, 0.8), rgba(7, 13, 22, 0.64)),
+    linear-gradient(135deg, rgba(2, 28, 40, 0.8), rgba(45, 17, 4, 0.72)),
     rgba(7, 13, 22, 0.66);
 }
 
@@ -241,10 +247,10 @@ h1 {
   position: relative;
   min-height: 168px;
   overflow: hidden;
-  border: 1px solid rgba(121, 235, 255, 0.24);
+  border: 1px solid rgba(255, 157, 66, 0.28);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(0, 222, 255, 0.12), transparent 45%),
+    linear-gradient(135deg, rgba(255, 122, 24, 0.16), rgba(0, 222, 255, 0.09) 45%, transparent 72%),
     repeating-linear-gradient(
       0deg,
       rgba(119, 240, 255, 0.08) 0,
@@ -266,7 +272,7 @@ h1 {
 
 .scan-stack::after {
   inset: 58px 70px;
-  border-color: rgba(104, 234, 255, 0.34);
+  border-color: rgba(255, 122, 24, 0.42);
   transform: skew(14deg);
 }
 
@@ -275,8 +281,8 @@ h1 {
   left: 16px;
   right: 16px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #8df6ff, #f6c76b, transparent);
-  box-shadow: 0 0 18px rgba(111, 235, 255, 0.72);
+  background: linear-gradient(90deg, transparent, #8df6ff, var(--chloe-orange), var(--vault-gold), transparent);
+  box-shadow: 0 0 18px rgba(255, 122, 24, 0.66);
 }
 
 .scan-line:nth-child(1) {
@@ -308,8 +314,8 @@ h1 {
 }
 
 .experience-card svg {
-  color: #6defff;
-  filter: drop-shadow(0 0 16px rgba(0, 222, 255, 0.48));
+  color: var(--chloe-orange-soft);
+  filter: drop-shadow(0 0 16px rgba(255, 122, 24, 0.48));
 }
 
 .detail-card {
@@ -321,12 +327,12 @@ h1 {
 }
 
 .detail-card svg {
-  color: #f6c76b;
+  color: var(--chloe-orange-soft);
 }
 
 .detail-card p {
   margin-bottom: 7px;
-  color: #88c8ff;
+  color: #ffb36d;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0;
@@ -363,12 +369,12 @@ h1 {
   100% {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-      0 0 28px rgba(0, 119, 255, 0.34);
+      0 0 28px rgba(255, 122, 24, 0.34);
   }
   50% {
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-      0 0 52px rgba(246, 198, 105, 0.42);
+      0 0 52px rgba(255, 122, 24, 0.5);
   }
 }
 
