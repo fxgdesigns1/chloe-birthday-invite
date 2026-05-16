@@ -1,20 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, MeshTransmissionMaterial, Stars } from '@react-three/drei';
+import { Environment, MeshTransmissionMaterial, Stars, useTexture } from '@react-three/drei';
 import { gsap } from 'gsap';
+import { clsx, type ClassValue } from 'clsx';
 import {
   CalendarDays,
-  Camera,
   Clock,
+  LockKeyhole,
   MapPin,
   MessageCircle,
-  Music2,
   ShieldAlert,
   Sparkles,
   UserRoundCheck,
-  Video,
 } from 'lucide-react';
 import * as THREE from 'three';
+import { twMerge } from 'tailwind-merge';
+
+const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+
+const imagePaths = Array.from({ length: 10 }, (_, index) => `/assets/chloe_${index + 1}.jpg`);
 
 const eventDetails = [
   {
@@ -24,295 +28,268 @@ const eventDetails = [
   },
   {
     icon: Clock,
-    label: 'ENTRY WINDOW',
-    value: 'Doors 21:00. Lockout from 21:45 until arrival.',
+    label: 'TIME',
+    value: 'Doors open: 21:00 | Guests arrive by: 21:45 (Strict)',
   },
   {
     icon: MapPin,
     label: 'LOCATION',
-    value: 'Cyan Lounge, Sion Spaces, within Black Kitchen, 426-428 Streatham High Road, London, SW16 3PX',
+    value: 'Sion Spaces, 426-428 Streatham High Road, London, SW16 3PX (Inside Black Kitchen)',
   },
   {
     icon: UserRoundCheck,
     label: 'DRESS CODE',
-    value: 'Smart Casual. Dressed to impress. No dusty clothes.',
-  },
-  {
-    icon: Sparkles,
-    label: 'VIBE',
-    value: 'Midnight Luxury. High Energy.',
-  },
-];
-
-const experienceMoments = [
-  {
-    icon: Music2,
-    title: 'DJ Pressure',
-    copy: 'A high-energy midnight soundtrack built for the surprise reveal and the turn up after.',
-  },
-  {
-    icon: Camera,
-    title: 'Flash Evidence',
-    copy: 'Photobooth and photographer moments framed like classified snapshots from the night.',
-  },
-  {
-    icon: Video,
-    title: 'Chloe Reel',
-    copy: 'A cinematic hero sequence can drop in once we have 6-10 strong Chloe photos or a short video.',
+    value: 'Smart Casual - Dressed to Impress. No basic/dusty clothes allowed.',
   },
 ];
 
 const whatsappLink =
-  'https://wa.me/447944545322?text=Hi%20Hannah%2C%20please%20add%20me%20to%20Chloe%27s%20birthday%20guestlist.';
+  'https://wa.me/447944545322?text=Hi%20Hannah%2C%20please%20add%20my%20guest%20names%20to%20Chloe%27s%20birthday%20guestlist.';
 
-type VaultSceneProps = {
+type SceneProps = {
   decrypted: boolean;
 };
 
-function VaultCore({ decrypted }: VaultSceneProps) {
-  const groupRef = useRef<THREE.Group>(null);
-  const coreRef = useRef<THREE.Mesh>(null);
-  const shardRefs = useRef<THREE.Mesh[]>([]);
-  const { camera } = useThree();
+type ImageFacetProps = {
+  decrypted: boolean;
+  index: number;
+  texture: THREE.Texture;
+  total: number;
+};
 
-  const shards = useMemo(
-    () =>
-      Array.from({ length: 36 }, (_, index) => {
-        const angle = (index / 36) * Math.PI * 2;
-        const radius = 0.82 + (index % 5) * 0.08;
-        return {
-          start: [Math.cos(angle) * radius, Math.sin(angle * 1.7) * 0.32, Math.sin(angle) * radius],
-          end: [
-            Math.cos(angle) * (3.2 + (index % 4) * 0.35),
-            Math.sin(angle * 1.3) * 2.2,
-            Math.sin(angle) * (2.8 + (index % 6) * 0.22),
-          ],
-          rotation: [angle * 1.8, angle * 0.7, angle * 1.2],
-          scale: 0.08 + (index % 4) * 0.015,
-        };
-      }),
-    [],
+function FloatingParticles() {
+  const pointsRef = useRef<THREE.Points>(null);
+  const positions = useMemo(() => {
+    const values = new Float32Array(210 * 3);
+    for (let index = 0; index < 210; index += 1) {
+      values[index * 3] = (Math.random() - 0.5) * 9;
+      values[index * 3 + 1] = (Math.random() - 0.5) * 5.4;
+      values[index * 3 + 2] = (Math.random() - 0.5) * 5.8;
+    }
+    return values;
+  }, []);
+
+  useFrame((state, delta) => {
+    if (!pointsRef.current) {
+      return;
+    }
+
+    pointsRef.current.rotation.y += delta * 0.025;
+    pointsRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.32) * 0.06;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial color="#ff8a3d" size={0.018} transparent opacity={0.72} sizeAttenuation />
+    </points>
+  );
+}
+
+function ImageFacet({ decrypted, index, texture, total }: ImageFacetProps) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
+  const angle = (index / total) * Math.PI * 2;
+  const isPortrait = index !== 3 && index !== 7;
+  const width = isPortrait ? 0.56 : 0.68;
+  const height = isPortrait ? 0.78 : 0.62;
+  const initialPosition = useMemo<[number, number, number]>(
+    () => [
+      Math.cos(angle) * 1.45,
+      ((index % 5) - 2) * 0.27,
+      Math.sin(angle) * 0.72,
+    ],
+    [angle, index],
+  );
+  const shatterPosition = useMemo<[number, number, number]>(
+    () => [
+      Math.cos(angle) * (3.3 + (index % 3) * 0.42),
+      ((index % 5) - 2) * 0.62 + (index % 2 === 0 ? 0.75 : -0.52),
+      Math.sin(angle) * (2.1 + (index % 4) * 0.26),
+    ],
+    [angle, index],
   );
 
-  useFrame((_, delta) => {
+  useEffect(() => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+  }, [texture]);
+
+  useFrame((state) => {
+    if (!meshRef.current || decrypted) {
+      return;
+    }
+
+    meshRef.current.position.y = initialPosition[1] + Math.sin(state.clock.elapsedTime * 0.9 + index) * 0.035;
+  });
+
+  useEffect(() => {
+    if (!decrypted || !meshRef.current || !materialRef.current) {
+      return;
+    }
+
+    gsap.to(meshRef.current.position, {
+      x: shatterPosition[0],
+      y: shatterPosition[1],
+      z: shatterPosition[2],
+      duration: 1.25,
+      delay: index * 0.025,
+      ease: 'power4.out',
+    });
+    gsap.to(meshRef.current.rotation, {
+      x: meshRef.current.rotation.x + 3.5 + index * 0.28,
+      y: meshRef.current.rotation.y + 4.2,
+      z: meshRef.current.rotation.z + 2.4,
+      duration: 1.35,
+      delay: index * 0.02,
+      ease: 'power3.out',
+    });
+    gsap.to(materialRef.current, {
+      opacity: 0,
+      duration: 0.68,
+      delay: 0.72 + index * 0.02,
+      ease: 'power2.out',
+    });
+  }, [decrypted, index, shatterPosition]);
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={initialPosition}
+      rotation={[0.1, -angle + Math.PI / 2, index % 2 === 0 ? 0.1 : -0.1]}
+    >
+      <planeGeometry args={[width, height, 1, 1]} />
+      <meshStandardMaterial
+        ref={materialRef}
+        map={texture}
+        side={THREE.DoubleSide}
+        transparent
+        opacity={0.9}
+        roughness={0.34}
+        metalness={0.12}
+        emissive="#ff6b35"
+        emissiveIntensity={0.08}
+      />
+    </mesh>
+  );
+}
+
+function GlassVault({ decrypted }: SceneProps) {
+  const groupRef = useRef<THREE.Group>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
+  const glassRef = useRef<THREE.Mesh>(null);
+  const textures = useTexture(imagePaths);
+  const { camera, size } = useThree();
+  const isMobile = size.width < 720;
+
+  useFrame((state, delta) => {
     if (!groupRef.current || decrypted) {
       return;
     }
 
-    groupRef.current.rotation.y += delta * 0.42;
-    groupRef.current.rotation.x = Math.sin(Date.now() * 0.00045) * 0.16;
+    groupRef.current.rotation.y += delta * (isMobile ? 0.18 : 0.28);
+    groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.42) * 0.08;
   });
 
   useEffect(() => {
-    if (!decrypted || !groupRef.current || !coreRef.current) {
+    if (!decrypted || !groupRef.current || !coreRef.current || !glassRef.current) {
       return;
     }
 
-    const timeline = gsap.timeline();
-    timeline
+    const coreMaterial = coreRef.current.material as THREE.MeshStandardMaterial;
+    const glassMaterial = glassRef.current.material as THREE.Material;
+
+    gsap
+      .timeline()
       .to(camera.position, {
-        z: 0.82,
-        y: 0.18,
-        duration: 1.2,
+        z: isMobile ? 1.55 : 1.05,
+        y: 0.12,
+        duration: 1.05,
         ease: 'power4.in',
+        onUpdate: () => camera.lookAt(0, 0, 0),
       })
       .to(
         coreRef.current.scale,
         {
-          x: 7.5,
-          y: 7.5,
-          z: 7.5,
-          duration: 1.1,
+          x: 6.8,
+          y: 6.8,
+          z: 6.8,
+          duration: 1,
           ease: 'expo.in',
         },
         '<',
       )
       .to(
-        coreRef.current.material,
+        coreMaterial,
         {
           opacity: 0,
-          duration: 0.85,
-          ease: 'power3.out',
+          duration: 0.62,
+          ease: 'power2.out',
         },
-        '-=0.36',
+        '-=0.3',
+      )
+      .to(
+        glassMaterial,
+        {
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+        },
+        '<',
       );
-
-    shardRefs.current.forEach((mesh, index) => {
-      const shard = shards[index];
-      if (!mesh || !shard) {
-        return;
-      }
-
-      gsap.to(mesh.material, {
-        opacity: 0.82,
-        duration: 0.18,
-        delay: 0.08 + index * 0.005,
-      });
-      gsap.to(mesh.position, {
-        x: shard.end[0],
-        y: shard.end[1],
-        z: shard.end[2],
-        duration: 1.35,
-        delay: 0.05,
-        ease: 'power4.out',
-      });
-      gsap.to(mesh.rotation, {
-        x: shard.rotation[0] + 6,
-        y: shard.rotation[1] + 8,
-        z: shard.rotation[2] + 5,
-        duration: 1.45,
-        ease: 'power3.out',
-      });
-      gsap.to(mesh.material, {
-        opacity: 0,
-        duration: 0.65,
-        delay: 0.8,
-      });
-    });
-
-    gsap.to(groupRef.current.rotation, {
-      z: Math.PI * 2,
-      duration: 1.15,
-      ease: 'power4.inOut',
-    });
-  }, [camera, decrypted, shards]);
+  }, [camera, decrypted, isMobile]);
 
   return (
-    <group ref={groupRef}>
-      <mesh ref={coreRef}>
-        <icosahedronGeometry args={[1.35, 1]} />
+    <group ref={groupRef} position={isMobile ? [0, 1.18, 0] : [1.22, 0.2, 0]} scale={isMobile ? 0.72 : 1.12}>
+      <mesh ref={glassRef}>
+        <icosahedronGeometry args={[1.12, 1]} />
         <MeshTransmissionMaterial
-          color="#ff8a2a"
-          emissive="#ff5d0a"
-          emissiveIntensity={0.68}
-          opacity={0.78}
+          color="#141b33"
+          emissive="#ff6b35"
+          emissiveIntensity={0.22}
+          opacity={0.28}
           transparent
-          roughness={0.22}
-          transmission={0.55}
-          thickness={0.7}
+          roughness={0.18}
+          transmission={0.68}
+          thickness={0.9}
         />
       </mesh>
+
+      <mesh ref={coreRef}>
+        <sphereGeometry args={[0.36, 32, 32]} />
+        <meshStandardMaterial color="#ff9a4a" emissive="#ff6b35" emissiveIntensity={3.2} transparent opacity={0.82} />
+      </mesh>
+
       <lineSegments>
-        <edgesGeometry args={[new THREE.IcosahedronGeometry(1.42, 1)]} />
-        <lineBasicMaterial color="#ffb36d" transparent opacity={0.7} />
+        <edgesGeometry args={[new THREE.IcosahedronGeometry(1.16, 1)]} />
+        <lineBasicMaterial color="#ffb088" transparent opacity={0.72} />
       </lineSegments>
-      {shards.map((shard, index) => (
-        <mesh
-          key={index}
-          ref={(node) => {
-            if (node) {
-              shardRefs.current[index] = node;
-            }
-          }}
-          position={shard.start as [number, number, number]}
-          rotation={shard.rotation as [number, number, number]}
-          scale={shard.scale}
-        >
-          <tetrahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial
-            color={index % 3 === 0 ? '#ff8a2a' : '#6bd7ff'}
-            emissive={index % 3 === 0 ? '#ff5d0a' : '#005dff'}
-            emissiveIntensity={1.1}
-            transparent
-            opacity={0}
-          />
-        </mesh>
+
+      {textures.map((texture, index) => (
+        <ImageFacet key={imagePaths[index]} decrypted={decrypted} index={index} texture={texture} total={textures.length} />
       ))}
     </group>
   );
 }
 
-function CyanLoungeHologram({ active }: { active: boolean }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const scanRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state, delta) => {
-    if (!groupRef.current) {
-      return;
-    }
-
-    groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.22) * 0.08;
-    groupRef.current.position.y = -0.8 + Math.sin(state.clock.elapsedTime * 0.7) * 0.035;
-
-    if (scanRef.current) {
-      scanRef.current.position.z = ((state.clock.elapsedTime * 1.2) % 5.2) - 2.6;
-    }
-
-    if (active) {
-      groupRef.current.rotation.y += delta * 0.08;
-    }
-  });
-
+function Scene({ decrypted }: SceneProps) {
   return (
-    <group ref={groupRef} position={[0, -0.94, -0.65]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.62, 0]}>
-        <planeGeometry args={[8.5, 7.2, 18, 18]} />
-        <meshStandardMaterial
-          color="#041016"
-          emissive="#3a1606"
-          emissiveIntensity={0.48}
-          wireframe
-          transparent
-          opacity={0.34}
-        />
-      </mesh>
-      <mesh position={[0, -0.25, -1.2]}>
-        <boxGeometry args={[3.7, 0.55, 0.9]} />
-        <meshStandardMaterial
-          color="#06131a"
-          emissive="#ff6d13"
-          emissiveIntensity={0.52}
-          roughness={0.34}
-          metalness={0.68}
-        />
-      </mesh>
-      <mesh position={[0, 0.16, -1.63]}>
-        <boxGeometry args={[3.25, 0.11, 0.08]} />
-        <meshStandardMaterial color="#ffb36d" emissive="#ff6d13" emissiveIntensity={2.8} />
-      </mesh>
-      {[-1.45, -0.72, 0, 0.72, 1.45].map((x) => (
-        <mesh key={x} position={[x, 0.18, -1.22]}>
-          <cylinderGeometry args={[0.08, 0.1, 0.56, 16]} />
-          <meshStandardMaterial
-            color={x === 0 ? '#f7c86d' : '#5feaff'}
-            emissive={x === 0 ? '#ff6d13' : '#00d5ff'}
-            emissiveIntensity={1.7}
-            transparent
-            opacity={0.86}
-          />
-        </mesh>
-      ))}
-      {[-2.8, 2.8].map((x) => (
-        <group key={x} position={[x, -0.05, -0.35]}>
-          <mesh>
-            <cylinderGeometry args={[0.08, 0.08, 1.92, 18]} />
-          <meshStandardMaterial color="#0b2029" emissive="#ff6d13" emissiveIntensity={0.55} />
-          </mesh>
-          <mesh position={[0, 1.02, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.05, 0.05, 1.45, 18]} />
-            <meshStandardMaterial color="#ffb36d" emissive="#ff6d13" emissiveIntensity={2.3} />
-          </mesh>
-        </group>
-      ))}
-      <mesh ref={scanRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.49, -2]}>
-        <planeGeometry args={[7.2, 0.06]} />
-        <meshBasicMaterial color="#ff9d42" transparent opacity={0.74} />
-      </mesh>
-    </group>
-  );
-}
-
-function Scene({ decrypted }: VaultSceneProps) {
-  return (
-    <Canvas camera={{ position: [0, 0.22, 4.4], fov: 46 }} dpr={[1, 1.8]}>
-      <color attach="background" args={['#030508']} />
-      <fog attach="fog" args={['#030508', 4.2, 9]} />
-      <ambientLight intensity={0.42} />
-      <pointLight position={[2.4, 2.8, 3.6]} intensity={2.2} color="#4ea7ff" />
-      <pointLight position={[-3.2, -2.2, 2.4]} intensity={2.4} color="#ff7a18" />
-      <Stars radius={32} depth={20} count={1200} factor={3.2} fade speed={0.45} />
-      <VaultCore decrypted={decrypted} />
-      <CyanLoungeHologram active={decrypted} />
+    <Canvas
+      camera={{ position: [0, 0.16, 4.5], fov: 44 }}
+      dpr={[1, 1.5]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
+    >
+      <color attach="background" args={['#050814']} />
+      <fog attach="fog" args={['#050814', 4.4, 8.8]} />
+      <ambientLight intensity={0.46} />
+      <pointLight position={[2.4, 2.8, 3.4]} intensity={1.75} color="#7cecff" />
+      <pointLight position={[-2.8, -1.8, 2.4]} intensity={3.1} color="#ff6b35" />
+      <pointLight position={[0, 0, 1]} intensity={2.2} color="#ff9a4a" />
+      <Stars radius={34} depth={20} count={900} factor={2.5} fade speed={0.35} />
+      <FloatingParticles />
+      <GlassVault decrypted={decrypted} />
       <Environment preset="night" />
     </Canvas>
   );
@@ -333,110 +310,132 @@ function App() {
       .timeline()
       .to(introRef.current, {
         autoAlpha: 0,
-        y: -28,
-        duration: 0.42,
+        y: -32,
+        duration: 0.45,
         ease: 'power2.in',
       })
       .fromTo(
         revealRef.current,
-        { autoAlpha: 0, y: 34 },
-        { autoAlpha: 1, y: 0, duration: 0.62, ease: 'power3.out' },
-        '+=0.68',
-      )
-        .fromTo(
-          details,
-          { autoAlpha: 0, y: 22 },
-          { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.52, ease: 'power3.out' },
-          '-=0.2',
+        { autoAlpha: 0, y: 38 },
+        { autoAlpha: 1, y: 0, duration: 0.72, ease: 'power3.out' },
+        '+=0.7',
       )
       .fromTo(
-        '.scan-line',
+        details,
+        { autoAlpha: 0, y: 22 },
+        { autoAlpha: 1, y: 0, stagger: 0.075, duration: 0.5, ease: 'power3.out' },
+        '-=0.3',
+      )
+      .fromTo(
+        '.classified-rule',
         { scaleX: 0, transformOrigin: 'left center' },
-        { scaleX: 1, duration: 0.78, stagger: 0.12, ease: 'power3.out' },
-        '-=0.42',
+        { scaleX: 1, duration: 0.68, stagger: 0.08, ease: 'power3.out' },
+        '-=0.45',
       );
   }, [decrypted]);
 
   return (
-    <main className="app-shell">
+    <main className={cn('app-shell text-slate-50')}>
       <div className="scene-wrap" aria-hidden="true">
         <Scene decrypted={decrypted} />
       </div>
       <div className="screen-vignette" />
 
       <section ref={introRef} className="intro-panel" aria-label="Encrypted invitation">
-        <p className="eyebrow">CLASSIFIED DOSSIER // ACCESS LEVEL MIDNIGHT</p>
+        <p className="eyebrow">MIDNIGHT TANGERINE // CLASSIFIED VAULT</p>
         <h1>Chloe</h1>
-        <p className="intro-copy">Surprise birthday transmission sealed in the digital vault.</p>
+        <p className="intro-copy">A photo-sealed birthday transmission. Access requires discretion.</p>
         <button className="decrypt-button" type="button" onClick={() => setDecrypted(true)}>
-          <ShieldAlert size={20} aria-hidden="true" />
+          <LockKeyhole size={20} aria-hidden="true" />
           <span>DECRYPT INVITATION</span>
         </button>
       </section>
 
-      <section ref={revealRef} className="dossier" aria-label="Decrypted event invitation">
-        <div className="dossier-header stagger-in">
-          <p className="eyebrow">DECRYPTED // CYAN LOUNGE ACCESS</p>
-          <h2>Chloe&apos;s Surprise Birthday Party</h2>
-          <p>Do not tell Chloe. If you see her beforehand, keep this locked down.</p>
-        </div>
+      <section ref={revealRef} className="dossier px-3 sm:px-5" aria-label="Decrypted event invitation">
+        <div className="mx-auto grid w-full max-w-6xl gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="classified-panel stagger-in lg:col-span-2">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p className="eyebrow">TOP SECRET // SURPRISE DOSSIER</p>
+                <h2>TOP SECRET: CHLOE&apos;S BIRTHDAY TURN UP</h2>
+                <p className="mt-4 max-w-3xl text-base leading-7 text-orange-50/82 md:text-lg">
+                  A strictly confidential birthday operation with midnight luxury energy, tangerine glow, and zero leaks.
+                </p>
+              </div>
+              <div className="rounded-full border border-orange-300/35 bg-orange-500/15 px-4 py-2 text-sm font-black text-orange-100 shadow-[0_0_30px_rgba(255,107,53,0.22)]">
+                ACCESS GRANTED
+              </div>
+            </div>
+            <span className="classified-rule mt-5 block h-px w-full bg-gradient-to-r from-orange-300 via-cyan-200 to-transparent" />
+          </div>
 
-        <div className="warning-strip stagger-in">
-          <ShieldAlert size={20} aria-hidden="true" />
-          <span>STRICTLY CONFIDENTIAL. DO NOT TELL CHLOE.</span>
-        </div>
+          <div className="grid gap-4">
+            {eventDetails.map((detail) => {
+              const Icon = detail.icon;
+              return (
+                <article className="detail-card stagger-in" key={detail.label}>
+                  <Icon size={22} aria-hidden="true" />
+                  <div>
+                    <p>{detail.label}</p>
+                    <strong>{detail.value}</strong>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
 
-        <div className="detail-grid">
-          {eventDetails.map((detail) => {
-            const Icon = detail.icon;
-            return (
-              <article className="detail-card stagger-in" key={detail.label}>
-                <Icon size={22} aria-hidden="true" />
-                <div>
-                  <p>{detail.label}</p>
-                  <strong>{detail.value}</strong>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        <div className="venue-brief stagger-in">
-          <div>
-            <p className="eyebrow">VENUE SCAN // MIDNIGHT LUXURY</p>
-            <h3>Cyan Lounge Mode</h3>
-            <p>
-              The invite now opens like a digital vault, then resolves into a cyan-lit lounge briefing:
-              neon bar glow, gold security lines, glass panels, and a premium party dossier.
+          <aside className="classified-panel stagger-in overflow-hidden">
+            <p className="eyebrow">VISUAL FILE // CHLOE</p>
+            <div className="photo-grid mt-4" aria-label="Chloe photo preview grid">
+              {imagePaths.slice(0, 6).map((path, index) => (
+                <img key={path} src={path} alt={`Chloe preview ${index + 1}`} loading="lazy" />
+              ))}
+            </div>
+            <span className="classified-rule my-5 block h-px w-full bg-gradient-to-r from-orange-300 via-orange-500 to-transparent" />
+            <p className="text-sm leading-6 text-slate-200/80">
+              These files stay inside the invitation experience: vault facets, background echoes, and classified visual evidence.
             </p>
-          </div>
-          <div className="scan-stack" aria-hidden="true">
-            <span className="scan-line" />
-            <span className="scan-line" />
-            <span className="scan-line" />
-            <span className="scan-line" />
-          </div>
-        </div>
+          </aside>
 
-        <div className="experience-grid">
-          {experienceMoments.map((moment) => {
-            const Icon = moment.icon;
-            return (
-              <article className="experience-card stagger-in" key={moment.title}>
-                <Icon size={23} aria-hidden="true" />
-                <h3>{moment.title}</h3>
-                <p>{moment.copy}</p>
+          <div className="warning-strip stagger-in lg:col-span-2">
+            <ShieldAlert size={22} aria-hidden="true" />
+            <span>
+              WARNING: THIS IS A SURPRISE. DO NOT MENTION ANYTHING TO CHLOE. DOORS LOCKED 21:45 - ARRIVAL.
+            </span>
+          </div>
+
+          <div className="classified-panel stagger-in lg:col-span-2">
+            <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <p className="eyebrow">RSVP PROTOCOL</p>
+                <p className="mt-2 text-xl font-black text-white">Text guest names to Hannah: 07944545322</p>
+              </div>
+              <a className="rsvp-button" href={whatsappLink} target="_blank" rel="noreferrer">
+                <MessageCircle size={21} aria-hidden="true" />
+                <span>Tap to RSVP via WhatsApp</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="image-ribbon stagger-in lg:col-span-2" aria-label="Chloe photo ribbon">
+            {imagePaths.map((path, index) => (
+              <img key={path} src={path} alt={`Chloe memory ${index + 1}`} loading="lazy" />
+            ))}
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3 lg:col-span-2">
+            {[
+              ['Live DJ', 'High energy from doors to last tune.'],
+              ['Photobooth', 'Instant keepsakes for the night.'],
+              ['Photographer', 'Professional coverage of the surprise.'],
+            ].map(([title, copy]) => (
+              <article className="experience-card stagger-in" key={title}>
+                <Sparkles size={23} aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{copy}</p>
               </article>
-            );
-          })}
-        </div>
-
-        <div className="action-row stagger-in">
-          <a className="rsvp-button" href={whatsappLink} target="_blank" rel="noreferrer">
-            <MessageCircle size={21} aria-hidden="true" />
-            <span>Tap to RSVP via WhatsApp</span>
-          </a>
-          <p>Hannah: 07944 545322</p>
+            ))}
+          </div>
         </div>
       </section>
     </main>
