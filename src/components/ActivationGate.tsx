@@ -22,10 +22,10 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
       <div className="gate-grade" />
       <div className="gate-editorial">
         <div className="gate-copy">
-          <p className="chapter-kicker">Private birthday residence</p>
-          <h1>Chloe&apos;s surprise opens here.</h1>
+          <p className="chapter-kicker">Private birthday reveal</p>
+          <h1>The room opens for Chloe.</h1>
           <p>
-            A cinematic invitation, sealed until the arrival. Enter quietly, dress beautifully, and keep the reveal intact.
+            A secret film, a hidden address, and one beautiful instruction: arrive early enough for the silence.
           </p>
         </div>
         <div className="invitation-seal" aria-hidden="true">
@@ -42,13 +42,13 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
         </div>
         <button className="link-node" type="button" onClick={onActivate}>
           <LockKeyhole aria-hidden="true" size={20} />
-          <span>Enter the private invite</span>
+          <span>Unlock the invitation</span>
           <Sparkles aria-hidden="true" size={18} />
         </button>
       </div>
       <div className="system-readout">
         <span>Surprise sealed</span>
-        <span>Welcome film armed</span>
+        <span>Welcome film live</span>
         <span>Hannah RSVP ready</span>
       </div>
       {audioError ? <p className="audio-warning">{audioError}</p> : null}

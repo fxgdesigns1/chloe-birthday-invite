@@ -93,8 +93,8 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
       <div className="stage-grade" />
       <div className="premiere-layout">
         <div className="premiere-copy">
-          <p className="chapter-kicker">Chapter I / The Private Welcome</p>
-          <h2>A message from Chloe before the room lights up.</h2>
+          <p className="chapter-kicker">Chapter I / The Whisper</p>
+          <h2>Chloe appears before the address does.</h2>
           <p>{transmission.secretLine}</p>
           <div className="transmission-actions">
             {needsManualPlay ? (
@@ -112,7 +112,7 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
             ) : null}
             <button className="mini-action" type="button" onClick={completeTransmission}>
               <SkipForward aria-hidden="true" size={16} />
-              <span>Reveal the invitation</span>
+              <span>Reveal the room</span>
             </button>
           </div>
         </div>
@@ -136,8 +136,8 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
             <div className="transmission-scan" aria-hidden="true" />
           </div>
           <div className="film-caption">
-            <span>Chloe / welcome film</span>
-            <span>Private preview</span>
+            <span>Chloe / private film</span>
+            <span>Keep it quiet</span>
           </div>
         </div>
       </div>

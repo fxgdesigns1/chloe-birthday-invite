@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import {
   cinematicAssets,
   contactPayload,
@@ -11,7 +13,7 @@ import {
 
 describe('event payload', () => {
   it('preserves the Chloe surprise logistics exactly', () => {
-    expect(eventPayload.headline).toBe('THE SURPRISE TURN UP');
+    expect(eventPayload.headline).toBe('THE ROOM HOLDS ITS BREATH');
     expect(eventPayload.celebrant).toBe('CHLOE');
     expect(eventPayload.logistics).toEqual({
       date: 'Saturday, 4th July 2026',
@@ -48,28 +50,37 @@ describe('event payload', () => {
     expect(mapPayload.venueName).toBe('Sion Spaces');
     expect(mapPayload.directionsUrl).toContain('https://www.google.com/maps/dir/?api=1');
     expect(mapPayload.embedUrl).toContain('output=embed');
-    expect(mapPayload.arrivalWarning).toBe('Arrive by 21:45 or the surprise is at risk.');
+    expect(mapPayload.arrivalWarning).toBe('Be inside by 21:45. After that, the room goes quiet.');
   });
 
-  it('defines a luxury editorial direction based on the supplied reference video', () => {
+  it('defines a revolutionary editorial direction based on the supplied reference video', () => {
     expect(luxuryDirection).toEqual({
-      mood: 'private luxury editorial reveal',
-      motion: 'full-bleed cinematic chapters with restrained, expensive transitions',
-      typography: 'oversized serif titles with minimal interface chrome',
+      mood: 'private luxury editorial reveal with museum-grade restraint',
+      motion: 'tilt-shift scroll depth, cinematic parallax, and full-bleed chapter reveals',
+      typography: 'high-contrast editorial display type with compact luxury interface labels',
     });
   });
 
-  it('maps the invite into premium editorial chapters', () => {
+  it('maps the invite into premium editorial chapters with sharper titles', () => {
     expect(editorialChapters.map((chapter) => chapter.title)).toEqual([
-      'The Private Welcome',
-      'The Water Arrival',
-      'The Reveal',
-      'The Coordinates',
-      'The RSVP',
+      'The Whisper',
+      'The Water Room',
+      'The Arrival Lock',
+      'The Hidden Address',
+      'The List',
     ]);
+    expect(editorialChapters[1].copy).toContain('tilt-shift');
+    expect(editorialChapters[3].copy).toContain('Black Kitchen');
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.introVideo);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.waterPortrait);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.editorialPortrait);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.sourcePortrait);
+  });
+
+  it('removes the bottom memory gallery from the invitation page', () => {
+    const parallaxSource = readFileSync(join(process.cwd(), 'src/components/ParallaxExperience.tsx'), 'utf8');
+
+    expect(parallaxSource).not.toContain('memory-gallery');
+    expect(parallaxSource).not.toContain('memory-strip');
   });
 });

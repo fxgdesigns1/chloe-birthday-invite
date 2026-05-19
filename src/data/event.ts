@@ -1,5 +1,5 @@
 export const eventPayload = {
-  headline: 'THE SURPRISE TURN UP',
+  headline: 'THE ROOM HOLDS ITS BREATH',
   celebrant: 'CHLOE',
   logistics: {
     date: 'Saturday, 4th July 2026',
@@ -38,46 +38,46 @@ export const mapPayload = {
   venueName: 'Sion Spaces',
   address: '426-428 Streatham High Road, London, SW16 3PX',
   locationNote: 'Located inside Black Kitchen',
-  arrivalWarning: 'Arrive by 21:45 or the surprise is at risk.',
+  arrivalWarning: 'Be inside by 21:45. After that, the room goes quiet.',
   directionsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodedVenue}`,
   embedUrl: `https://www.google.com/maps?q=${encodedVenue}&output=embed`,
 } as const;
 
 export const luxuryDirection = {
-  mood: 'private luxury editorial reveal',
-  motion: 'full-bleed cinematic chapters with restrained, expensive transitions',
-  typography: 'oversized serif titles with minimal interface chrome',
+  mood: 'private luxury editorial reveal with museum-grade restraint',
+  motion: 'tilt-shift scroll depth, cinematic parallax, and full-bleed chapter reveals',
+  typography: 'high-contrast editorial display type with compact luxury interface labels',
 } as const;
 
 export const editorialChapters = [
   {
     eyebrow: 'Chapter I',
-    title: 'The Private Welcome',
-    copy: 'A personal message from Chloe opens the night, framed like a private film premiere.',
+    title: 'The Whisper',
+    copy: 'Chloe opens the invitation in a private welcome film. Watch it, keep it quiet, then step through.',
     asset: cinematicAssets.introVideo,
   },
   {
     eyebrow: 'Chapter II',
-    title: 'The Water Arrival',
-    copy: 'Cyan water, orange light, and a floating editorial portrait set the dress-code mood.',
+    title: 'The Water Room',
+    copy: 'A tilt-shift water chapter turns cyan light, orange fabric, and slow motion into the dress-code mood.',
     asset: cinematicAssets.waterPortrait,
   },
   {
     eyebrow: 'Chapter III',
-    title: 'The Reveal',
-    copy: 'The room stays quiet until Chloe arrives. Then the whole night turns cinematic.',
+    title: 'The Arrival Lock',
+    copy: 'The room holds its breath until Chloe arrives. No late entrances. No spoilers. Just the reveal.',
     asset: cinematicAssets.editorialPortrait,
   },
   {
     eyebrow: 'Chapter IV',
-    title: 'The Coordinates',
-    copy: 'Sion Spaces, inside Black Kitchen. Arrive before 21:45 so the surprise lands cleanly.',
+    title: 'The Hidden Address',
+    copy: 'Sion Spaces, inside Black Kitchen. The map stays cinematic, but the route is one tap away.',
     asset: cinematicAssets.sourcePortrait,
   },
   {
     eyebrow: 'Final Chapter',
-    title: 'The RSVP',
-    copy: 'Names go to Hannah on WhatsApp, with a local guest log as backup.',
+    title: 'The List',
+    copy: 'RSVP with Hannah on WhatsApp. The guest list closes when the surprise timeline begins.',
     asset: cinematicAssets.sourcePortrait,
   },
 ] as const;
@@ -86,29 +86,29 @@ export const transmission = {
   videoSource: cinematicAssets.introVideo,
   posterSource: cinematicAssets.introPoster,
   secretLine:
-    'Chloe has sent the welcome. Now keep the surprise sealed until she walks in.',
+    'A private welcome from Chloe, then the invite unlocks. Keep the room quiet until she walks in.',
 } as const;
 
 export const celebrationTimeline = [
   {
     time: '21:00',
-    label: 'Doors Open',
-    detail: 'The room warms up, drinks land, and the surprise stays sealed.',
+    label: 'Doors',
+    detail: 'Arrive clean, settle in, and keep the surprise sealed.',
   },
   {
     time: '21:45',
-    label: 'Lockdown',
-    detail: 'Strict arrival policy. Once Chloe is en route, the timeline closes.',
+    label: 'Lock',
+    detail: 'The door policy tightens. Once Chloe is en route, the reveal is protected.',
   },
   {
     time: '22:00',
-    label: 'Signal Drop',
-    detail: 'The reveal hits. Cameras ready, voices low, energy high.',
+    label: 'Reveal',
+    detail: 'Lights, phones, voices, then the birthday moment lands.',
   },
   {
     time: 'Late',
-    label: 'Turn Up',
-    detail: 'High-fashion birthday chaos, clean fits only, no lounge energy.',
+    label: 'Afterglow',
+    detail: 'High-fashion birthday energy. Smart casual, no lounge energy.',
   },
 ] as const;
 

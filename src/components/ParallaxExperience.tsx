@@ -8,14 +8,12 @@ import {
   MapPin,
   Navigation,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import {
   celebrationTimeline,
   cinematicAssets,
   editorialChapters,
   eventPayload,
-  imageFragments,
   mapPayload,
 } from '../data/event';
 import { RsvpPanel } from './RsvpPanel';
@@ -92,6 +90,8 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
       gsap.utils.toArray<HTMLElement>('.chapter-media').forEach((element, index) => {
         gsap.to(element, {
           yPercent: index % 2 === 0 ? -7 : 6,
+          rotateX: index % 2 === 0 ? 2 : -2,
+          rotateY: index % 2 === 0 ? -2 : 2,
           ease: 'none',
           scrollTrigger: {
             trigger: element,
@@ -100,6 +100,31 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
             scrub: true,
           },
         });
+      });
+
+      gsap.utils.toArray<HTMLElement>('.tilt-plane').forEach((element, index) => {
+        gsap.fromTo(
+          element,
+          {
+            '--tilt-blur': '9px',
+            '--tilt-focus': '46%',
+            rotateX: index % 2 === 0 ? 5 : -5,
+            rotateY: index % 2 === 0 ? -4 : 4,
+          },
+          {
+            '--tilt-blur': '2px',
+            '--tilt-focus': '56%',
+            rotateX: 0,
+            rotateY: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: element,
+              start: 'top 86%',
+              end: 'bottom 24%',
+              scrub: true,
+            },
+          },
+        );
       });
     }, rootRef);
 
@@ -122,56 +147,66 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
       </div>
 
       <section className="editorial-hero">
-        <div className="hero-image hero-image--wide" aria-hidden="true">
+        <div className="hero-image hero-image--wide tilt-plane" aria-hidden="true">
           <img src={cinematicAssets.waterPortrait} alt="" />
+          <span className="tilt-lens" />
         </div>
         <div className="hero-copy">
           <p className="chapter-kicker">
             <EyeOff aria-hidden="true" size={18} />
-            Surprise invitation
+            Private reveal
           </p>
           <h1>{eventPayload.celebrant}</h1>
           <p>
-            A private birthday reveal dressed like a luxury editorial. Arrive before the signal drops, keep it quiet,
-            and let Chloe walk into the moment.
+            A secret birthday room, a welcome film, and a single rule: arrive before the hush, then let Chloe walk
+            into the impossible.
           </p>
         </div>
-        <div className="hero-image hero-image--portrait" aria-label="Chloe editorial portrait">
+        <div className="hero-image hero-image--portrait tilt-plane" aria-label="Chloe editorial portrait">
           <img src={cinematicAssets.editorialPortrait} alt="Chloe underwater editorial portrait" />
+          <span className="tilt-lens" />
         </div>
       </section>
 
       <section className="chapter-index editorial-reveal" aria-label="Invitation chapters">
-        {editorialChapters.map((chapter) => (
-          <article key={chapter.title}>
+        {editorialChapters.map((chapter, index) => (
+          <article className="chapter-tile" key={chapter.title}>
             <span>{chapter.eyebrow}</span>
             <strong>{chapter.title}</strong>
+            <small>{String(index + 1).padStart(2, '0')}</small>
           </article>
         ))}
       </section>
 
       <div className="editorial-stack">
-        <section className="feature-chapter editorial-reveal">
+        <section className="feature-chapter editorial-reveal tilt-plane">
           <div className="chapter-copy">
             <p className="chapter-kicker">{editorialChapters[1].eyebrow}</p>
             <h2>{editorialChapters[1].title}</h2>
             <p>{editorialChapters[1].copy}</p>
           </div>
-          <img className="chapter-media" src={cinematicAssets.waterPortrait} alt="Chloe floating in water wearing orange" />
+          <div className="chapter-media-frame">
+            <img className="chapter-media" src={cinematicAssets.waterPortrait} alt="Chloe floating in water wearing orange" />
+            <span className="tilt-lens" />
+          </div>
         </section>
 
         <section className="logistics-run editorial-reveal" aria-label="Event logistics">
-          {logistics.map(({ icon: Icon, label, value }) => (
-            <article key={label}>
+          {logistics.map(({ icon: Icon, label, value }, index) => (
+            <article className="detail-tile" key={label}>
               <Icon aria-hidden="true" size={20} />
               <span>{label}</span>
               <p>{value}</p>
+              <small>{String(index + 1).padStart(2, '0')}</small>
             </article>
           ))}
         </section>
 
-        <section className="arrival-chapter editorial-reveal">
-          <img className="chapter-media" src={cinematicAssets.sourcePortrait} alt="Chloe smiling portrait" />
+        <section className="arrival-chapter editorial-reveal tilt-plane">
+          <div className="chapter-media-frame chapter-media-frame--portrait">
+            <img className="chapter-media" src={cinematicAssets.sourcePortrait} alt="Chloe smiling portrait" />
+            <span className="tilt-lens" />
+          </div>
           <div className="chapter-copy">
             <p className="chapter-kicker">{editorialChapters[2].eyebrow}</p>
             <h2>{editorialChapters[2].title}</h2>
@@ -188,7 +223,7 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
           </div>
         </section>
 
-        <section className="map-section editorial-reveal" aria-label="Venue directions">
+        <section className="map-section editorial-reveal tilt-plane" aria-label="Venue directions">
           <div className="map-copy">
             <p className="chapter-kicker">{editorialChapters[3].eyebrow}</p>
             <h2>{mapPayload.venueName}</h2>
@@ -200,17 +235,25 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
               <span>Open Google Maps</span>
             </a>
           </div>
-          <div className="map-frame">
-            <div className="map-fallback" aria-hidden="true">
-              <span className="route-line" />
-              <span className="route-pin" />
+          <div className="map-shell">
+            <div className="map-frame">
+              <div className="map-fallback" aria-hidden="true">
+                <span className="route-line" />
+                <span className="route-pin" />
+                <span className="route-ring" />
+              </div>
+              <iframe
+                title="Sion Spaces map"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={mapPayload.embedUrl}
+              />
             </div>
-            <iframe
-              title="Sion Spaces map"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              src={mapPayload.embedUrl}
-            />
+            <div className="map-glass-card" aria-hidden="true">
+              <span>Streatham High Road</span>
+              <strong>Inside Black Kitchen</strong>
+              <small>21:45 silence window</small>
+            </div>
           </div>
         </section>
 
@@ -221,18 +264,6 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
             <p>{editorialChapters[4].copy}</p>
           </div>
           <RsvpPanel />
-        </section>
-
-        <section className="memory-gallery editorial-reveal" aria-label="Chloe memory gallery">
-          <div className="section-heading">
-            <Sparkles aria-hidden="true" size={20} />
-            <h2>Portraits of the night.</h2>
-          </div>
-          <div className="memory-strip">
-            {imageFragments.map((image, index) => (
-              <img alt={`Chloe memory ${index + 1}`} key={image} loading="lazy" src={image} />
-            ))}
-          </div>
         </section>
       </div>
     </section>
