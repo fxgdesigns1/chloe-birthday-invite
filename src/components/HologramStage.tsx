@@ -32,23 +32,25 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
     }
 
     const lines = breakdown.querySelectorAll('.break-line');
+    const veil = breakdown.querySelector('.reveal-veil');
     gsap
-      .timeline({ onComplete })
+      .timeline({ onComplete, defaults: { ease: 'power3.inOut' } })
       .set(breakdown, { autoAlpha: 1 })
+      .set(veil, { autoAlpha: 0, scale: 1.06 })
       .fromTo(
         lines,
-        { scaleX: 0, xPercent: -80, opacity: 0 },
+        { scaleX: 0, xPercent: -40, opacity: 0 },
         {
           scaleX: 1,
           xPercent: 0,
-          opacity: 1,
-          duration: 0.32,
-          stagger: 0.025,
-          ease: 'power4.out',
+          opacity: 0.34,
+          duration: 0.55,
+          stagger: 0.018,
         },
       )
-      .to(shell, { opacity: 0, duration: 0.28, ease: 'steps(8)' }, '-=0.08')
-      .to(lines, { xPercent: 120, opacity: 0, duration: 0.26, stagger: 0.018, ease: 'power2.in' }, '<');
+      .to(veil, { autoAlpha: 1, scale: 1, duration: 0.78 }, '-=0.42')
+      .to(shell, { opacity: 0, filter: 'blur(14px)', scale: 1.018, duration: 0.78 }, '-=0.5')
+      .to(lines, { xPercent: 70, opacity: 0, duration: 0.5, stagger: 0.012 }, '<');
   }, [onComplete]);
 
   useEffect(() => {
@@ -148,6 +150,7 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
         </div>
       ) : null}
       <div className="breakdown" ref={breakdownRef} aria-hidden="true">
+        <span className="reveal-veil" />
         {Array.from({ length: 20 }, (_, index) => (
           <span className="break-line" key={index} />
         ))}

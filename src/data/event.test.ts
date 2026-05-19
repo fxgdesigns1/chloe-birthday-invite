@@ -83,4 +83,13 @@ describe('event payload', () => {
     expect(parallaxSource).not.toContain('memory-gallery');
     expect(parallaxSource).not.toContain('memory-strip');
   });
+
+  it('keeps the venue map readable instead of decorative-only', () => {
+    const parallaxSource = readFileSync(join(process.cwd(), 'src/components/ParallaxExperience.tsx'), 'utf8');
+
+    expect(parallaxSource).toContain('map-venue-card');
+    expect(parallaxSource).toContain('Sion Spaces, Streatham');
+    expect(parallaxSource).not.toContain('route-line');
+    expect(parallaxSource).not.toContain('route-pin');
+  });
 });

@@ -144,6 +144,8 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
           src={cinematicAssets.waterVideo}
         />
         <div className="water-grade" />
+        <span className="depth-haze depth-haze--near" />
+        <span className="depth-haze depth-haze--far" />
       </div>
 
       <section className="editorial-hero">
@@ -237,10 +239,10 @@ export function ParallaxExperience({ active }: ParallaxExperienceProps) {
           </div>
           <div className="map-shell">
             <div className="map-frame">
-              <div className="map-fallback" aria-hidden="true">
-                <span className="route-line" />
-                <span className="route-pin" />
-                <span className="route-ring" />
+              <div className="map-fallback map-venue-card" aria-hidden="true">
+                <span>Live venue map</span>
+                <strong>Sion Spaces, Streatham</strong>
+                <small>Open in Google Maps for turn-by-turn directions</small>
               </div>
               <iframe
                 title="Sion Spaces map"
