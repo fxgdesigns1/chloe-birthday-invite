@@ -26,17 +26,17 @@ describe('event payload', () => {
 
   it('references ten Chloe image fragments for the parallax background', () => {
     expect(imageFragments).toHaveLength(10);
-    expect(imageFragments[0]).toBe('/assets/chloe_1.jpg');
-    expect(imageFragments[9]).toBe('/assets/chloe_10.jpg');
+    expect(imageFragments[0]).toBe('./assets/chloe_1.jpg');
+    expect(imageFragments[9]).toBe('./assets/chloe_10.jpg');
   });
 
   it('exposes the cinematic media supplied for the invite', () => {
-    expect(cinematicAssets.introVideo).toBe('/assets/media/intro/chloe-welcome.mp4');
-    expect(cinematicAssets.introPoster).toBe('/assets/media/intro/chloe-welcome-preview.gif');
-    expect(cinematicAssets.waterVideo).toBe('/assets/media/water/chloe-floating-water.mp4');
-    expect(cinematicAssets.waterPoster).toBe('/assets/media/water/chloe-floating-water-preview.gif');
-    expect(cinematicAssets.waterPortrait).toBe('/assets/media/water/chloe-floating-portrait.jpg');
-    expect(cinematicAssets.editorialPortrait).toBe('/assets/media/editorial/chloe-editorial-regal.jpg');
+    expect(cinematicAssets.introVideo).toBe('./assets/media/intro/chloe-welcome.mp4');
+    expect(cinematicAssets.introPoster).toBe('./assets/media/intro/chloe-welcome-preview.gif');
+    expect(cinematicAssets.waterVideo).toBe('./assets/media/water/chloe-floating-water.mp4');
+    expect(cinematicAssets.waterPoster).toBe('./assets/media/water/chloe-floating-water-preview.gif');
+    expect(cinematicAssets.waterPortrait).toBe('./assets/media/water/chloe-floating-portrait.jpg');
+    expect(cinematicAssets.editorialPortrait).toBe('./assets/media/editorial/chloe-editorial-regal.jpg');
   });
 
   it('restores Hannah as the WhatsApp RSVP contact', () => {

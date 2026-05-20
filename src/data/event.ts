@@ -12,17 +12,17 @@ export const eventPayload = {
 
 export const imageFragments = Array.from(
   { length: 10 },
-  (_, index) => `/assets/chloe_${index + 1}.jpg`,
+  (_, index) => `./assets/chloe_${index + 1}.jpg`,
 );
 
 export const cinematicAssets = {
-  introVideo: '/assets/media/intro/chloe-welcome.mp4',
-  introPoster: '/assets/media/intro/chloe-welcome-preview.gif',
-  waterVideo: '/assets/media/water/chloe-floating-water.mp4',
-  waterPoster: '/assets/media/water/chloe-floating-water-preview.gif',
-  waterPortrait: '/assets/media/water/chloe-floating-portrait.jpg',
-  editorialPortrait: '/assets/media/editorial/chloe-editorial-regal.jpg',
-  sourcePortrait: '/assets/media/editorial/chloe-source-screenshot.jpg',
+  introVideo: './assets/media/intro/chloe-welcome.mp4',
+  introPoster: './assets/media/intro/chloe-welcome-preview.gif',
+  waterVideo: './assets/media/water/chloe-floating-water.mp4',
+  waterPoster: './assets/media/water/chloe-floating-water-preview.gif',
+  waterPortrait: './assets/media/water/chloe-floating-portrait.jpg',
+  editorialPortrait: './assets/media/editorial/chloe-editorial-regal.jpg',
+  sourcePortrait: './assets/media/editorial/chloe-source-screenshot.jpg',
 } as const;
 
 export const contactPayload = {
