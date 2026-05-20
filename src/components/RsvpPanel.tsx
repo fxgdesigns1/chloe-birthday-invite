@@ -55,7 +55,7 @@ export function RsvpPanel() {
         <span>RSVP WITH HANNAH</span>
       </div>
       <p className="rsvp-intro">
-        Submit here for the local guest log, then tap WhatsApp so {contactPayload.hostName} gets the names directly.
+        Log a private confirmation here, then tap WhatsApp so {contactPayload.hostName} gets the names directly.
       </p>
       <div className="field-grid">
         <label>
