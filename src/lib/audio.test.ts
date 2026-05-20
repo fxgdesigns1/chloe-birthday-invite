@@ -1,16 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { AMAPIANO_AMBIENCE } from './audio';
+import { SOULFUL_HOUSE_AMBIENCE } from './audio';
 
-describe('amapiano-inspired ambience', () => {
-  it('defines an original low-volume lounge groove instead of a copyrighted track', () => {
-    expect(AMAPIANO_AMBIENCE.bpm).toBe(112);
-    expect(AMAPIANO_AMBIENCE.disclaimer).toContain('original');
-    expect(AMAPIANO_AMBIENCE.disclaimer).not.toContain('Kelvin Momo');
-    expect(AMAPIANO_AMBIENCE.disclaimer).not.toContain('Fool Me');
+describe('soulful house ambience', () => {
+  it('defines an original louder-but-soft house groove instead of a copyrighted track', () => {
+    expect(SOULFUL_HOUSE_AMBIENCE.bpm).toBe(122);
+    expect(SOULFUL_HOUSE_AMBIENCE.masterLevel).toBeGreaterThan(0.18);
+    expect(SOULFUL_HOUSE_AMBIENCE.disclaimer).toContain('original');
+    expect(SOULFUL_HOUSE_AMBIENCE.disclaimer).not.toContain('Kelvin Momo');
+    expect(SOULFUL_HOUSE_AMBIENCE.disclaimer).not.toContain('Fool Me');
   });
 
-  it('includes soft log drum and shaker steps for a smooth party feel', () => {
-    expect(AMAPIANO_AMBIENCE.logDrumSteps.length).toBeGreaterThanOrEqual(4);
-    expect(AMAPIANO_AMBIENCE.shakerSteps.length).toBeGreaterThanOrEqual(8);
+  it('includes four-on-the-floor kick, offbeat hats, and warm chord notes', () => {
+    expect(SOULFUL_HOUSE_AMBIENCE.kickSteps).toEqual([0, 4, 8, 12]);
+    expect(SOULFUL_HOUSE_AMBIENCE.hatSteps.length).toBeGreaterThanOrEqual(4);
+    expect(SOULFUL_HOUSE_AMBIENCE.chordNotes.length).toBeGreaterThanOrEqual(4);
   });
 });

@@ -10,12 +10,14 @@ export type AmbientController = {
   stop: () => void;
 };
 
-export const AMAPIANO_AMBIENCE = {
-  bpm: 112,
-  disclaimer: 'original low-volume amapiano-inspired lounge loop; no copyrighted track audio is used.',
-  logDrumSteps: [0, 3, 7, 10, 14],
-  shakerSteps: [1, 2, 5, 6, 9, 10, 13, 14],
-  padNotes: [55, 82.41, 164.82],
+export const SOULFUL_HOUSE_AMBIENCE = {
+  bpm: 122,
+  masterLevel: 0.23,
+  disclaimer: 'original louder-but-soft soulful house loop; no copyrighted track audio is used.',
+  kickSteps: [0, 4, 8, 12],
+  hatSteps: [2, 6, 10, 14],
+  clapSteps: [4, 12],
+  chordNotes: [65.41, 98, 130.81, 196, 261.63],
 } as const;
 
 const createOscillator = (
@@ -78,17 +80,17 @@ export async function unlockAmbientLoop(): Promise<AmbientController> {
   const feedback = context.createGain();
   const compressor = context.createDynamicsCompressor();
   const now = context.currentTime;
-  const beatLength = 60 / AMAPIANO_AMBIENCE.bpm;
+  const beatLength = 60 / SOULFUL_HOUSE_AMBIENCE.bpm;
   let step = 0;
 
   master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.13, now + 2.4);
+  master.gain.exponentialRampToValueAtTime(SOULFUL_HOUSE_AMBIENCE.masterLevel, now + 2);
 
   filter.type = 'lowpass';
-  filter.frequency.value = 740;
-  filter.Q.value = 0.8;
-  delay.delayTime.value = 0.42;
-  feedback.gain.value = 0.18;
+  filter.frequency.value = 980;
+  filter.Q.value = 0.72;
+  delay.delayTime.value = beatLength * 0.75;
+  feedback.gain.value = 0.16;
 
   filter.connect(delay);
   delay.connect(feedback);
@@ -97,31 +99,29 @@ export async function unlockAmbientLoop(): Promise<AmbientController> {
   filter.connect(compressor);
   compressor.connect(master).connect(context.destination);
 
-  const oscillators = [
-    createOscillator(context, filter, AMAPIANO_AMBIENCE.padNotes[0], 'sine'),
-    createOscillator(context, filter, AMAPIANO_AMBIENCE.padNotes[1], 'triangle'),
-    createOscillator(context, filter, AMAPIANO_AMBIENCE.padNotes[2], 'sine'),
-  ];
+  const oscillators = SOULFUL_HOUSE_AMBIENCE.chordNotes.map((frequency, index) =>
+    createOscillator(context, filter, frequency, index % 2 === 0 ? 'sine' : 'triangle'),
+  );
 
   const sweep = window.setInterval(() => {
     const sweepTime = context.currentTime;
-    filter.frequency.exponentialRampToValueAtTime(520 + Math.random() * 420, sweepTime + 1.4);
-  }, 1800);
+    filter.frequency.exponentialRampToValueAtTime(780 + Math.random() * 520, sweepTime + 1.3);
+  }, 1600);
 
   const groove = window.setInterval(() => {
     const playAt = context.currentTime + 0.045;
     const currentStep = step % 16;
 
-    if ((AMAPIANO_AMBIENCE.logDrumSteps as readonly number[]).includes(currentStep)) {
-      schedulePercussion(context, compressor, currentStep === 0 ? 72 : 92, playAt, 0.32, 0.09, 'sine');
+    if ((SOULFUL_HOUSE_AMBIENCE.kickSteps as readonly number[]).includes(currentStep)) {
+      schedulePercussion(context, compressor, 58, playAt, 0.2, 0.14, 'sine');
     }
 
-    if ((AMAPIANO_AMBIENCE.shakerSteps as readonly number[]).includes(currentStep)) {
-      schedulePercussion(context, compressor, 7200, playAt, 0.045, 0.018, 'triangle');
+    if ((SOULFUL_HOUSE_AMBIENCE.hatSteps as readonly number[]).includes(currentStep)) {
+      schedulePercussion(context, compressor, 8800, playAt, 0.052, 0.033, 'triangle');
     }
 
-    if (currentStep === 4 || currentStep === 12) {
-      schedulePercussion(context, compressor, 184, playAt, 0.08, 0.026, 'square');
+    if ((SOULFUL_HOUSE_AMBIENCE.clapSteps as readonly number[]).includes(currentStep)) {
+      schedulePercussion(context, compressor, 210, playAt, 0.095, 0.04, 'square');
     }
 
     step += 1;
