@@ -1,18 +1,17 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   CalendarDays,
   Clock,
   EyeOff,
+  ExternalLink,
   LockKeyhole,
   MapPin,
-  MessageCircle,
   Navigation,
   ShieldAlert,
   Sparkles,
+  Ticket,
   UserRoundCheck,
 } from 'lucide-react';
-
-const imagePaths = Array.from({ length: 10 }, (_, index) => `/assets/chloe_${index + 1}.jpg`);
 
 const assets = {
   introVideo: '/assets/media/intro/chloe-welcome.mp4',
@@ -55,28 +54,63 @@ const timeline = [
 
 const mapDestination = 'Sion%20Spaces%2C%20426-428%20Streatham%20High%20Road%2C%20London%20SW16%203PX';
 const mapUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapDestination}`;
+const mapEmbedUrl = `https://www.google.com/maps?q=${mapDestination}&output=embed`;
+const eventbriteRsvp = {
+  eventId: '1989983650668',
+  ticketUrl:
+    'https://www.eventbrite.co.uk/e/chloe-secret-birthday-soiree-tickets-1989983650668?utm-campaign=social&utm-content=attendeeshare&utm-medium=discovery&utm-source=wa&utm-term=checkoutwidget',
+} as const;
+
+function EventbriteRsvp() {
+  return (
+    <section className="rsvp-panel reveal-panel" aria-label="RSVP on Eventbrite">
+      <p className="panel-kicker">
+        <Ticket aria-hidden="true" size={18} />
+        <span>RSVP on Eventbrite</span>
+      </p>
+      <p className="rsvp-intro">
+        Reserve your place for Chloe Secret Birthday Soiree through the live Eventbrite checkout.
+      </p>
+      <a className="eventbrite-rsvp" href={eventbriteRsvp.ticketUrl} target="_blank" rel="noreferrer">
+        <ExternalLink aria-hidden="true" size={18} />
+        <span>Open Eventbrite RSVP</span>
+      </a>
+      <p className="rsvp-message">Event ID: {eventbriteRsvp.eventId}</p>
+    </section>
+  );
+}
 
 function App() {
   const [stage, setStage] = useState<'gate' | 'intro' | 'invite'>('gate');
-  const [name, setName] = useState('');
-  const [guests, setGuests] = useState('No extra guests');
-  const [note, setNote] = useState('');
+  const [isOpening, setIsOpening] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
   const introVideoRef = useRef<HTMLVideoElement>(null);
 
-  const whatsappUrl = useMemo(() => {
-    const nameLine = name.trim() ? `My name is ${name.trim()}. ` : '';
-    const guestLine = guests.trim() ? `${guests.trim()}. ` : '';
-    const noteLine = note.trim() ? `Note: ${note.trim()}. ` : '';
-    const text = `Hi Hannah, please add me to Chloe's birthday guestlist. ${nameLine}${guestLine}${noteLine}I am attending.`;
-
-    return `https://wa.me/447944545322?text=${encodeURIComponent(text)}`;
-  }, [guests, name, note]);
-
   const openIntro = () => {
-    setStage('intro');
+    if (isOpening) {
+      return;
+    }
+
+    setIsOpening(true);
     window.setTimeout(() => {
-      void introVideoRef.current?.play();
-    }, 80);
+      setStage('intro');
+      setIsOpening(false);
+      window.setTimeout(() => {
+        void introVideoRef.current?.play();
+      }, 120);
+    }, 560);
+  };
+
+  const revealInvite = () => {
+    if (isRevealing) {
+      return;
+    }
+
+    setIsRevealing(true);
+    window.setTimeout(() => {
+      setStage('invite');
+      setIsRevealing(false);
+    }, 520);
   };
 
   return (
@@ -89,14 +123,21 @@ function App() {
       ) : null}
 
       {stage === 'gate' ? (
-        <section className="activation-gate" aria-label="Private invitation gate">
+        <section
+          className={`activation-gate${isOpening ? ' activation-gate--opening' : ''}`}
+          aria-label="Private invitation gate"
+        >
+          <div className="gate-atmosphere" aria-hidden="true">
+            <video autoPlay loop muted playsInline poster={assets.waterPoster} src={assets.waterVideo} />
+            <div />
+          </div>
           <div className="matrix-grid" />
           <div className="activation-node">
             <div className="node-ring node-ring--outer" />
             <div className="node-ring node-ring--inner" />
-            <button className="link-node" type="button" onClick={openIntro}>
+            <button className="link-node" type="button" onClick={openIntro} disabled={isOpening}>
               <LockKeyhole aria-hidden="true" size={24} />
-              <span>Open Chloe's Message</span>
+              <span>{isOpening ? 'Opening' : "Open Chloe's Message"}</span>
               <Sparkles aria-hidden="true" size={20} />
             </button>
           </div>
@@ -109,7 +150,10 @@ function App() {
       ) : null}
 
       {stage === 'intro' ? (
-        <section className="intro-stage" aria-label="Chloe welcome video">
+        <section
+          className={`intro-stage${isRevealing ? ' intro-stage--leaving' : ''}`}
+          aria-label="Chloe welcome video"
+        >
           <div className="cinema-orbit" aria-hidden="true">
             <span />
             <span />
@@ -129,8 +173,8 @@ function App() {
           <div className="intro-caption">
             <span>Secret Transmission</span>
             <p>Chloe has sent the welcome. Now keep the surprise sealed until she walks in.</p>
-            <button className="mini-action" type="button" onClick={() => setStage('invite')}>
-              Reveal Invite
+            <button className="mini-action" type="button" onClick={revealInvite} disabled={isRevealing}>
+              {isRevealing ? 'Revealing' : 'Reveal Invite'}
             </button>
           </div>
         </section>
@@ -202,9 +246,18 @@ function App() {
                   <span>Open Google Maps</span>
                 </a>
               </div>
-              <div className="map-frame" aria-hidden="true">
-                <span className="route-line" />
-                <span className="route-pin" />
+              <div className="map-frame">
+                <div className="map-fallback" aria-hidden="true">
+                  <span>Live venue map</span>
+                  <strong>Sion Spaces, Streatham</strong>
+                  <small>Open Google Maps for turn-by-turn directions</small>
+                </div>
+                <iframe
+                  title="Sion Spaces map"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={mapEmbedUrl}
+                />
               </div>
             </section>
 
@@ -224,37 +277,8 @@ function App() {
               </div>
             </section>
 
-            <section className="rsvp-panel reveal-panel" aria-label="RSVP with Hannah">
-              <p className="panel-kicker">
-                <MessageCircle aria-hidden="true" size={18} />
-                <span>RSVP with Hannah</span>
-              </p>
-              <div className="field-grid">
-                <label>
-                  Name
-                  <input value={name} maxLength={80} onChange={(event) => setName(event.target.value)} />
-                </label>
-                <label>
-                  Guest note
-                  <input value={guests} maxLength={120} onChange={(event) => setGuests(event.target.value)} />
-                </label>
-              </div>
-              <label>
-                Message note
-                <textarea value={note} maxLength={240} rows={3} onChange={(event) => setNote(event.target.value)} />
-              </label>
-              <a className="whatsapp-rsvp" href={whatsappUrl} target="_blank" rel="noreferrer">
-                <MessageCircle aria-hidden="true" size={19} />
-                <span>Message Hannah on WhatsApp</span>
-              </a>
-              <p className="host-contact">Hannah: 07944545322</p>
-            </section>
+            <EventbriteRsvp />
 
-            <section className="memory-strip reveal-panel" aria-label="Chloe memory strip">
-              {imagePaths.map((image, index) => (
-                <img alt={`Chloe memory ${index + 1}`} key={image} loading="lazy" src={image} />
-              ))}
-            </section>
           </div>
         </section>
       ) : null}
