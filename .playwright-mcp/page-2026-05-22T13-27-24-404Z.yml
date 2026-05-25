@@ -1,0 +1,6 @@
+- main [ref=e3]:
+  - region "Chloe welcome video" [ref=e20]:
+    - generic [ref=e23]:
+      - generic [ref=e24]: Secret Transmission
+      - paragraph [ref=e25]: Chloe has sent the welcome. Now keep the surprise sealed until she walks in.
+      - button "Reveal Invite" [ref=e26] [cursor=pointer]

@@ -1,0 +1,183 @@
+<style>
+  .direction-note {
+    margin: -8px 0 20px;
+    color: rgba(255,255,255,.68);
+    max-width: 900px;
+  }
+
+  .visual-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .visual-card {
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .preview-stage {
+    position: relative;
+    min-height: 360px;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: #111;
+  }
+
+  .preview-stage::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+  }
+
+  .preview-button {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(78%, 310px);
+    min-height: 58px;
+    padding: 0 16px;
+    border: 1px solid rgba(255,255,255,.42);
+    border-radius: 10px;
+    color: #fff;
+    background: rgba(255,255,255,.18);
+    box-shadow: 0 20px 70px rgba(0,0,0,.22);
+    font-weight: 900;
+    font-size: .86rem;
+    text-transform: uppercase;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(18px);
+  }
+
+  .bloom {
+    background:
+      radial-gradient(circle at 20% 14%, #fff4b5 0 4%, transparent 4.5%),
+      radial-gradient(circle at 76% 18%, #ff6da7 0 6%, transparent 6.5%),
+      radial-gradient(circle at 54% 36%, #fff8dd 0 10%, transparent 10.5%),
+      radial-gradient(circle at 22% 74%, #ff8d6e 0 9%, transparent 9.5%),
+      radial-gradient(circle at 78% 76%, #f3e5ff 0 11%, transparent 11.5%),
+      linear-gradient(135deg, #fe4f8f 0%, #ffb85c 44%, #fff2ba 100%);
+  }
+
+  .bloom::before {
+    position: absolute;
+    inset: -20%;
+    content: "";
+    background:
+      repeating-conic-gradient(from 16deg, rgba(255,255,255,.48) 0deg 10deg, rgba(255,116,156,.1) 10deg 25deg);
+    mix-blend-mode: soft-light;
+    opacity: .84;
+  }
+
+  .bloom::after {
+    background:
+      linear-gradient(180deg, rgba(87,15,46,.08), rgba(87,15,46,.38)),
+      radial-gradient(circle at 50% 48%, rgba(255,255,255,.48), transparent 14rem);
+  }
+
+  .waterfall {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.16) 14%, transparent 32%),
+      repeating-linear-gradient(100deg, rgba(255,255,255,.42) 0 2px, transparent 2px 18px),
+      radial-gradient(circle at 28% 76%, #ffb367 0 8%, transparent 8.5%),
+      radial-gradient(circle at 78% 68%, #ffe778 0 7%, transparent 7.5%),
+      linear-gradient(135deg, #00b7c7 0%, #0a749c 46%, #ffe7a1 100%);
+  }
+
+  .waterfall::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background:
+      linear-gradient(90deg, transparent 0 12%, rgba(255,255,255,.76) 18%, transparent 24% 40%, rgba(255,255,255,.54) 48%, transparent 58%),
+      linear-gradient(180deg, rgba(255,255,255,.26), transparent 48%, rgba(18,104,118,.35));
+    filter: blur(.3px);
+  }
+
+  .waterfall::after {
+    background: radial-gradient(circle at 50% 75%, rgba(255,255,255,.7), transparent 12rem);
+  }
+
+  .hybrid {
+    background:
+      radial-gradient(circle at 72% 18%, #ff7a93 0 7%, transparent 7.5%),
+      radial-gradient(circle at 18% 24%, #ffe38a 0 8%, transparent 8.5%),
+      radial-gradient(circle at 86% 72%, #fac0ff 0 9%, transparent 9.5%),
+      linear-gradient(135deg, #14c7d9 0%, #097996 38%, #ff8a52 72%, #ffe5a0 100%);
+  }
+
+  .hybrid::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background:
+      repeating-linear-gradient(110deg, rgba(255,255,255,.36) 0 2px, transparent 2px 22px),
+      repeating-conic-gradient(from 30deg, rgba(255,255,255,.22) 0deg 8deg, transparent 8deg 28deg);
+    mix-blend-mode: soft-light;
+  }
+
+  .hybrid::after {
+    background:
+      linear-gradient(180deg, rgba(2,30,45,.08), rgba(2,30,45,.45)),
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.32), transparent 13rem);
+  }
+
+  .source-row {
+    margin-top: 22px;
+    color: rgba(255,255,255,.62);
+    font-size: .92rem;
+  }
+
+  @media (max-width: 920px) {
+    .visual-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<h2>Which opening background feels like Chloe’s birthday?</h2>
+<p class="direction-note">
+  I pulled the direction toward current curated-web patterns: full-bleed photographic/immersive scenes, fashion/editorial scale, event-site clarity, and brighter art direction instead of the current classified dark-scanline mood.
+</p>
+
+<div class="visual-cards cards">
+  <div class="card visual-card" data-choice="flower" onclick="toggleSelect(this)">
+    <div class="preview-stage bloom">
+      <div class="preview-button">Open Chloe's Message</div>
+    </div>
+    <div class="card-body">
+      <h3>A. Full-Page Floral Bloom</h3>
+      <p>Bright, birthday-first, warm pink/coral/yellow florals covering the entire screen. Best if you want it to immediately stop feeling glum.</p>
+    </div>
+  </div>
+
+  <div class="card visual-card" data-choice="waterfall" onclick="toggleSelect(this)">
+    <div class="preview-stage waterfall">
+      <div class="preview-button">Open Chloe's Message</div>
+    </div>
+    <div class="card-body">
+      <h3>B. Waterfall Garden</h3>
+      <p>Fresh cyan water, sunlit mist, and small floral highlights. Keeps the water concept but makes it celebratory and lighter.</p>
+    </div>
+  </div>
+
+  <div class="card visual-card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="preview-stage hybrid">
+      <div class="preview-button">Open Chloe's Message</div>
+    </div>
+    <div class="card-body">
+      <h3>C. Floral Water Film</h3>
+      <p>A hybrid: the existing water/video world stays, but the whole site gets floral color, petal overlays, and a brighter invite glow.</p>
+    </div>
+  </div>
+</div>
+
+<p class="source-row">
+  Inspiration cues checked: Awwwards immersive/fashion categories, Siteinspire art/fashion/animation galleries, and One Page Love event-site inspiration.
+</p>

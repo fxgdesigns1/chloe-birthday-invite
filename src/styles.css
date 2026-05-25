@@ -73,7 +73,7 @@ video {
   z-index: 20;
   min-height: 100vh;
   overflow: hidden;
-  background: #05060a;
+  background: #fff0df;
 }
 
 .activation-gate,
@@ -98,57 +98,104 @@ video {
   animation: stage-leave 560ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
 }
 
-.gate-atmosphere {
+.floral-atmosphere {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  background: #fff0df;
 }
 
-.gate-atmosphere video {
+.floral-atmosphere img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.34;
-  filter: saturate(0.86) contrast(1.08) brightness(0.56);
+  filter: saturate(1.08) contrast(1.02) brightness(1.03);
+  transform: scale(1.025);
 }
 
-.gate-atmosphere div {
+.floral-atmosphere--intro img {
+  filter: saturate(1.02) contrast(1) brightness(0.98);
+}
+
+.floral-grade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(4, 5, 8, 0.46), rgba(4, 5, 8, 0.82)),
-    radial-gradient(circle at 50% 48%, rgba(255, 107, 53, 0.24), transparent 24rem),
-    radial-gradient(circle at 78% 32%, rgba(112, 234, 255, 0.14), transparent 28rem);
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.7), rgba(255, 244, 224, 0.44) 18rem, transparent 31rem),
+    radial-gradient(circle at 16% 16%, rgba(255, 255, 255, 0.34), transparent 20rem),
+    radial-gradient(circle at 84% 82%, rgba(255, 126, 121, 0.3), transparent 24rem),
+    linear-gradient(180deg, rgba(65, 20, 34, 0.06), rgba(75, 28, 34, 0.28));
+  mix-blend-mode: normal;
 }
 
-.matrix-grid {
+.floral-atmosphere--intro .floral-grade {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 245, 236, 0.58), rgba(255, 228, 207, 0.34) 18rem, transparent 31rem),
+    linear-gradient(180deg, rgba(60, 18, 34, 0.1), rgba(35, 16, 24, 0.44));
+}
+
+.petal-field,
+.petal-field span {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(255, 176, 136, 0.075) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(112, 234, 255, 0.045) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
-  opacity: 0.72;
 }
 
-.matrix-grid::after,
+.petal-field {
+  inset: 0;
+  overflow: hidden;
+}
+
+.petal-field span {
+  width: clamp(50px, 7vw, 96px);
+  aspect-ratio: 1.45;
+  border-radius: 999px 999px 999px 180px;
+  background:
+    radial-gradient(circle at 34% 32%, rgba(255, 255, 255, 0.76), transparent 34%),
+    linear-gradient(135deg, rgba(255, 227, 210, 0.62), rgba(255, 101, 137, 0.34));
+  box-shadow: 0 18px 54px rgba(255, 104, 98, 0.18);
+  filter: blur(0.2px);
+  opacity: 0.58;
+  transform: rotate(var(--petal-rotate, 0deg));
+  animation: petal-drift var(--petal-speed, 12s) ease-in-out infinite alternate;
+}
+
+.petal-field span:nth-child(1) {
+  left: 8%;
+  top: 18%;
+  --petal-rotate: -22deg;
+  --petal-speed: 13s;
+}
+
+.petal-field span:nth-child(2) {
+  right: 10%;
+  top: 14%;
+  --petal-rotate: 34deg;
+  --petal-speed: 15s;
+}
+
+.petal-field span:nth-child(3) {
+  bottom: 13%;
+  left: 16%;
+  --petal-rotate: 18deg;
+  --petal-speed: 11s;
+}
+
+.petal-field span:nth-child(4) {
+  right: 15%;
+  bottom: 16%;
+  --petal-rotate: -38deg;
+  --petal-speed: 14s;
+}
+
 .transmission-scan {
   position: absolute;
   inset: 0;
   content: "";
   background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.045) 0,
-      rgba(255, 255, 255, 0.045) 1px,
-      transparent 1px,
-      transparent 7px
-    ),
-    linear-gradient(120deg, rgba(255, 107, 53, 0.18), transparent 42%, rgba(112, 234, 255, 0.1));
-  mix-blend-mode: screen;
+    radial-gradient(circle at 22% 18%, rgba(255, 239, 202, 0.26), transparent 15rem),
+    linear-gradient(120deg, rgba(255, 122, 145, 0.14), transparent 42%, rgba(255, 221, 149, 0.16));
+  mix-blend-mode: soft-light;
 }
 
 .activation-node {
@@ -157,15 +204,17 @@ video {
   width: min(76vw, 500px);
   aspect-ratio: 1;
   place-items: center;
-  filter: drop-shadow(0 30px 80px rgba(0, 0, 0, 0.48));
+  filter: drop-shadow(0 28px 70px rgba(117, 43, 43, 0.2));
 }
 
 .node-ring,
 .cinema-orbit span {
   position: absolute;
-  border: 1px solid rgba(255, 176, 136, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 999px;
-  box-shadow: 0 0 48px rgba(255, 107, 53, 0.26);
+  box-shadow:
+    0 0 48px rgba(255, 151, 111, 0.24),
+    inset 0 0 28px rgba(255, 255, 255, 0.16);
 }
 
 .node-ring--outer {
@@ -176,8 +225,8 @@ video {
 
 .node-ring--inner {
   inset: 24%;
-  border-color: rgba(112, 234, 255, 0.42);
-  opacity: 0.52;
+  border-color: rgba(255, 215, 141, 0.55);
+  opacity: 0.62;
   animation: ring-spin 14s linear infinite reverse;
 }
 
@@ -209,16 +258,16 @@ video {
   min-height: 72px;
   width: min(360px, 82vw);
   overflow: hidden;
-  color: #fff9f4;
+  color: #491415;
   background:
-    linear-gradient(135deg, rgba(255, 247, 239, 0.16), rgba(255, 107, 53, 0.16)),
-    rgba(8, 9, 13, 0.58);
-  border: 1px solid rgba(255, 230, 210, 0.36);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 238, 217, 0.42)),
+    rgba(255, 209, 198, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.62);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 24px 84px rgba(0, 0, 0, 0.42),
-    0 0 54px rgba(255, 107, 53, 0.28);
-  backdrop-filter: blur(20px) saturate(1.12);
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+    0 24px 76px rgba(120, 45, 45, 0.22),
+    0 0 58px rgba(255, 245, 203, 0.44);
+  backdrop-filter: blur(20px) saturate(1.22);
   font-size: clamp(0.82rem, 2.4vw, 0.98rem);
   text-transform: uppercase;
 }
@@ -254,8 +303,9 @@ video {
 .directions-button:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
-    0 0 52px rgba(255, 107, 53, 0.52);
+    0 0 0 1px rgba(255, 255, 255, 0.28) inset,
+    0 18px 58px rgba(255, 95, 117, 0.32),
+    0 0 52px rgba(255, 236, 164, 0.42);
   outline: none;
 }
 
@@ -271,10 +321,11 @@ video {
   z-index: 2;
   display: grid;
   gap: 6px;
-  color: rgba(255, 247, 239, 0.68);
+  color: rgba(255, 255, 255, 0.84);
   font-size: 0.72rem;
   font-weight: 850;
   text-align: right;
+  text-shadow: 0 2px 18px rgba(88, 30, 34, 0.42);
   text-transform: uppercase;
 }
 
@@ -380,10 +431,10 @@ video {
   z-index: -1;
   content: "";
   background:
-    linear-gradient(135deg, rgba(255, 247, 239, 0.1), rgba(255, 107, 53, 0.08)),
-    rgba(5, 6, 10, 0.66);
-  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(18px) saturate(1.08);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 229, 211, 0.42)),
+    rgba(255, 245, 235, 0.42);
+  box-shadow: 0 24px 80px rgba(104, 34, 43, 0.2);
+  backdrop-filter: blur(18px) saturate(1.16);
 }
 
 .intro-caption span,
@@ -399,14 +450,18 @@ video {
   text-transform: uppercase;
 }
 
+.intro-caption span {
+  color: #9f2f32;
+}
+
 .intro-caption p {
   max-width: 390px;
   margin: 9px 0 0;
-  color: rgba(255, 247, 239, 0.86);
+  color: rgba(73, 20, 21, 0.86);
   font-size: clamp(0.92rem, 2vw, 1.02rem);
   font-weight: 650;
   line-height: 1.45;
-  text-shadow: 0 0 24px rgba(0, 0, 0, 0.44);
+  text-shadow: none;
 }
 
 .mini-action,
@@ -418,15 +473,15 @@ video {
 
 .mini-action {
   min-height: 46px;
-  color: #fff9f4;
+  color: #4a1515;
   background:
-    linear-gradient(135deg, rgba(255, 247, 239, 0.14), rgba(255, 107, 53, 0.18)),
-    rgba(8, 9, 13, 0.62);
-  border: 1px solid rgba(255, 230, 210, 0.28);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 222, 205, 0.52)),
+    rgba(255, 204, 190, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
-    0 18px 52px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(14px) saturate(1.08);
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+    0 18px 52px rgba(104, 34, 43, 0.18);
+  backdrop-filter: blur(14px) saturate(1.12);
   font-size: 0.86rem;
   text-transform: uppercase;
 }
@@ -712,6 +767,16 @@ video {
 @keyframes ring-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes petal-drift {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 12px -18px;
   }
 }
 

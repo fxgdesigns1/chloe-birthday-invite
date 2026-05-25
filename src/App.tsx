@@ -16,6 +16,7 @@ import {
 const assets = {
   introVideo: '/assets/media/intro/chloe-welcome.mp4',
   introPoster: '/assets/media/intro/chloe-welcome-preview.gif',
+  floralBackdrop: '/assets/media/floral/chloe-floral-bloom.png',
   waterVideo: '/assets/media/water/chloe-floating-water.mp4',
   waterPoster: '/assets/media/water/chloe-floating-water-preview.gif',
   waterPortrait: '/assets/media/water/chloe-floating-portrait.jpg',
@@ -80,6 +81,21 @@ function EventbriteRsvp() {
   );
 }
 
+function FloralAtmosphere({ variant }: { variant: 'gate' | 'intro' }) {
+  return (
+    <div className={`floral-atmosphere floral-atmosphere--${variant}`} aria-hidden="true">
+      <img src={assets.floralBackdrop} alt="" />
+      <div className="floral-grade" />
+      <div className="petal-field">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [stage, setStage] = useState<'gate' | 'intro' | 'invite'>('gate');
   const [isOpening, setIsOpening] = useState(false);
@@ -115,7 +131,7 @@ function App() {
 
   return (
     <main className={`app-shell app-shell--${stage}`}>
-      {stage !== 'gate' ? (
+      {stage === 'invite' ? (
         <div className="water-backdrop" aria-hidden="true">
           <video autoPlay loop muted playsInline poster={assets.waterPoster} src={assets.waterVideo} />
           <div />
@@ -127,11 +143,7 @@ function App() {
           className={`activation-gate${isOpening ? ' activation-gate--opening' : ''}`}
           aria-label="Private invitation gate"
         >
-          <div className="gate-atmosphere" aria-hidden="true">
-            <video autoPlay loop muted playsInline poster={assets.waterPoster} src={assets.waterVideo} />
-            <div />
-          </div>
-          <div className="matrix-grid" />
+          <FloralAtmosphere variant="gate" />
           <div className="activation-node">
             <div className="node-ring node-ring--outer" />
             <div className="node-ring node-ring--inner" />
@@ -142,9 +154,9 @@ function App() {
             </button>
           </div>
           <div className="system-readout">
-            <span>Private frequency</span>
-            <span>Welcome video armed</span>
-            <span>Surprise mode: silent</span>
+            <span>Birthday bloom</span>
+            <span>Welcome video ready</span>
+            <span>Surprise mode: sealed</span>
           </div>
         </section>
       ) : null}
@@ -154,6 +166,7 @@ function App() {
           className={`intro-stage${isRevealing ? ' intro-stage--leaving' : ''}`}
           aria-label="Chloe welcome video"
         >
+          <FloralAtmosphere variant="intro" />
           <div className="cinema-orbit" aria-hidden="true">
             <span />
             <span />

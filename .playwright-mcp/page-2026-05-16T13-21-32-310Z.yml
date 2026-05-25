@@ -1,0 +1,10 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - button "ESTABLISHING LINK" [ref=e8] [cursor=pointer]:
+      - img [ref=e9]
+      - generic [ref=e15]: ESTABLISHING LINK
+      - img [ref=e16]
+    - generic [ref=e18]:
+      - generic [ref=e19]: PRIVATE FREQUENCY
+      - generic [ref=e20]: CHLOE SIGNAL WAITING
+      - generic [ref=e21]: ORANGE CHANNEL PRIMED

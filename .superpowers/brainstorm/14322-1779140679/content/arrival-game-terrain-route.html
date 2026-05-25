@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive 3D Terrain Route</title>
+  <style>
+    :root {
+      --orange: #ff6b35;
+      --orange-soft: #ffb088;
+      --cyan: #7cecff;
+      --ivory: #fff7ef;
+      --ink: #03050a;
+      color: var(--ivory);
+      background: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 62% 34%, rgba(255, 107, 53, .22), transparent 32rem),
+        linear-gradient(135deg, #03050a 0%, #10141e 58%, #241007 100%);
+    }
+
+    .hud {
+      position: fixed;
+      left: clamp(16px, 4vw, 48px);
+      top: clamp(16px, 4vw, 42px);
+      z-index: 4;
+      width: min(470px, calc(100vw - 32px));
+      pointer-events: none;
+    }
+
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--orange-soft);
+      font-size: .75rem;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 520px;
+      margin: 0;
+      color: #fffaf3;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.2rem, 8vw, 7.2rem);
+      line-height: .8;
+      letter-spacing: 0;
+      text-shadow: 0 0 34px rgba(255, 107, 53, .44);
+    }
+
+    .copy {
+      max-width: 470px;
+      margin: 20px 0 0;
+      color: rgba(255, 247, 239, .78);
+      line-height: 1.6;
+    }
+
+    .controls {
+      position: fixed;
+      right: clamp(16px, 4vw, 42px);
+      bottom: clamp(16px, 4vw, 36px);
+      z-index: 4;
+      display: grid;
+      gap: 10px;
+      width: min(330px, calc(100vw - 32px));
+      padding: 14px;
+      border: 1px solid rgba(255, 205, 180, .22);
+      border-radius: 8px;
+      background: rgba(5, 7, 12, .78);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .035);
+      backdrop-filter: blur(18px);
+    }
+
+    .controls p {
+      margin: 0;
+      color: rgba(255, 247, 239, .74);
+      font-size: .88rem;
+      line-height: 1.45;
+    }
+
+    .mission-status {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(255, 205, 180, .18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .045);
+    }
+
+    .mission-status strong {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .mission-status span {
+      color: rgba(255, 247, 239, .76);
+      font-size: .8rem;
+      font-weight: 850;
+    }
+
+    .mission-status.good {
+      border-color: rgba(74, 255, 154, .58);
+      box-shadow: 0 0 32px rgba(74, 255, 154, .18);
+    }
+
+    .mission-status.good strong { color: #4aff9a; }
+
+    .mission-status.bad {
+      border-color: rgba(255, 64, 64, .68);
+      box-shadow: 0 0 34px rgba(255, 64, 64, .2);
+    }
+
+    .mission-status.bad strong { color: #ff4040; }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    a {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 224, 205, .42);
+      border-radius: 8px;
+      color: #170805;
+      background: linear-gradient(135deg, #ffb088, var(--orange));
+      box-shadow: 0 0 30px rgba(255, 107, 53, .28);
+      cursor: pointer;
+      font: inherit;
+      font-size: .86rem;
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    button.secondary {
+      color: var(--ivory);
+      background: rgba(255, 255, 255, .045);
+      box-shadow: none;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      cursor: grab;
+    }
+
+    #scene:active { cursor: grabbing; }
+
+    .loading {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      color: var(--orange-soft);
+      font-weight: 950;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (max-width: 780px) {
+      body { overflow: auto; }
+      #scene { position: relative; min-height: 68vh; margin-top: 210px; }
+      .hud { position: absolute; }
+      .controls { position: relative; right: auto; bottom: auto; margin: 0 auto 18px; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.171.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <section class="hud">
+    <p class="kicker">Interactive 3D route model</p>
+    <h1>Follow the terrain to Chloe</h1>
+    <p class="copy">This is closer to what you described: a real 3D terrain scene the guest can rotate, zoom, and follow. In the app, this would sit after the Photo Orbit reveal and use Google/Cesium map data for the real route to Sion Spaces.</p>
+  </section>
+
+  <div id="scene" aria-label="Interactive 3D terrain route preview">
+    <div class="loading">Loading 3D terrain...</div>
+  </div>
+
+  <aside class="controls">
+    <p>Drag the model to rotate. Scroll to zoom. The glowing route line is the path guests follow to the venue pin.</p>
+    <div class="button-row">
+      <button type="button" id="replay">Replay route</button>
+      <button class="secondary" type="button" id="reset">Reset view</button>
+      <button class="secondary" type="button" id="early">Early run</button>
+      <button class="secondary" type="button" id="late">Late risk</button>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Sion%20Spaces%2C%20426-428%20Streatham%20High%20Road%2C%20London%20SW16%203PX" target="_blank" rel="noreferrer">Open Google Maps</a>
+    </div>
+    <div class="mission-status good" id="missionStatus">
+      <strong>✓ CLEARED</strong>
+      <span id="missionCopy">ETA 21:32. You beat lockdown by 13 minutes.</span>
+    </div>
+  </aside>
+
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.171.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.171.0/examples/jsm/controls/OrbitControls.js';
+
+    const mount = document.querySelector('#scene');
+    const loading = document.querySelector('.loading');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    mount.appendChild(renderer.domElement);
+    loading.remove();
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x03050a, 0.026);
+
+    const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 100);
+    camera.position.set(8.8, 7.2, 9.6);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.minDistance = 4.2;
+    controls.maxDistance = 18;
+    controls.target.set(0, .2, 0);
+
+    scene.add(new THREE.AmbientLight(0xfff0e4, .52));
+    const cyanLight = new THREE.PointLight(0x7cecff, 18, 24);
+    cyanLight.position.set(-5, 6, 5);
+    scene.add(cyanLight);
+    const orangeLight = new THREE.PointLight(0xff6b35, 24, 28);
+    orangeLight.position.set(5, 4, -3);
+    scene.add(orangeLight);
+
+    const terrainSize = 11;
+    const segments = 100;
+    const terrainGeometry = new THREE.PlaneGeometry(terrainSize, terrainSize, segments, segments);
+    terrainGeometry.rotateX(-Math.PI / 2);
+
+    const color = new THREE.Color();
+    const colors = [];
+
+    for (let index = 0; index < terrainGeometry.attributes.position.count; index += 1) {
+      const x = terrainGeometry.attributes.position.getX(index);
+      const z = terrainGeometry.attributes.position.getZ(index);
+      const ridge = Math.sin(x * 1.35) * Math.cos(z * .92) * .34;
+      const mound = Math.exp(-((x - 1.8) ** 2 + (z + 1.4) ** 2) / 6) * .76;
+      const cut = Math.exp(-((x + 2.2) ** 2 + (z - 1.9) ** 2) / 4) * .38;
+      const y = ridge + mound - cut + Math.sin((x + z) * 2.4) * .06;
+      terrainGeometry.attributes.position.setY(index, y);
+
+      const normalized = THREE.MathUtils.clamp((y + .52) / 1.5, 0, 1);
+      color.setHSL(0.08 + normalized * .08, .62, .12 + normalized * .2);
+      if (normalized > .56) color.lerp(new THREE.Color(0xff9a63), .2);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    terrainGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    terrainGeometry.computeVertexNormals();
+
+    const terrain = new THREE.Mesh(
+      terrainGeometry,
+      new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        roughness: .78,
+        metalness: .05,
+        transparent: true,
+        opacity: .92,
+      }),
+    );
+    scene.add(terrain);
+
+    const grid = new THREE.GridHelper(terrainSize, 22, 0x7cecff, 0xff6b35);
+    grid.position.y = .08;
+    grid.material.transparent = true;
+    grid.material.opacity = .18;
+    scene.add(grid);
+
+    const sampleHeight = (x, z) => {
+      const ridge = Math.sin(x * 1.35) * Math.cos(z * .92) * .34;
+      const mound = Math.exp(-((x - 1.8) ** 2 + (z + 1.4) ** 2) / 6) * .76;
+      const cut = Math.exp(-((x + 2.2) ** 2 + (z - 1.9) ** 2) / 4) * .38;
+      return ridge + mound - cut + Math.sin((x + z) * 2.4) * .06;
+    };
+
+    const routePoints = [
+      [-4.5, 3.8],
+      [-3.2, 2.2],
+      [-1.8, 1.4],
+      [-.8, .2],
+      [.4, -.4],
+      [1.6, -1.3],
+      [3.1, -2.2],
+      [4.15, -3.55],
+    ].map(([x, z]) => new THREE.Vector3(x, sampleHeight(x, z) + .22, z));
+
+    const routeCurve = new THREE.CatmullRomCurve3(routePoints);
+    const routeGeometry = new THREE.TubeGeometry(routeCurve, 180, .055, 12, false);
+    const routeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xff6b35,
+      emissive: 0xff6b35,
+      emissiveIntensity: 2.6,
+      roughness: .26,
+      metalness: .14,
+    });
+    const route = new THREE.Mesh(
+      routeGeometry,
+      routeMaterial,
+    );
+    scene.add(route);
+
+    const routeGlowMaterial = new THREE.MeshBasicMaterial({ color: 0xff6b35, transparent: true, opacity: .16 });
+    const routeGlow = new THREE.Mesh(
+      new THREE.TubeGeometry(routeCurve, 180, .11, 12, false),
+      routeGlowMaterial,
+    );
+    scene.add(routeGlow);
+
+    const roadMaterial = new THREE.MeshStandardMaterial({ color: 0x1b3444, emissive: 0x143040, emissiveIntensity: .4, roughness: .55 });
+    const makeRoad = (x, z, length, rotation) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(length, .035, .12), roadMaterial);
+      mesh.position.set(x, sampleHeight(x, z) + .08, z);
+      mesh.rotation.y = rotation;
+      scene.add(mesh);
+    };
+    makeRoad(-2.2, 2.3, 4.2, -.45);
+    makeRoad(1.7, .4, 5.4, .22);
+    makeRoad(.6, -2.9, 6.2, -.28);
+    makeRoad(3.5, -1.1, 4.4, 1.08);
+
+    const makePin = (label, point, colorHex) => {
+      const group = new THREE.Group();
+      group.position.copy(point);
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(.24, .76, 28),
+        new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 1.6 }),
+      );
+      cone.position.y = .54;
+      cone.rotation.x = Math.PI;
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(.28, 28, 28),
+        new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 1.8 }),
+      );
+      sphere.position.y = 1.05;
+      group.add(cone, sphere);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 160;
+      const context = canvas.getContext('2d');
+      context.fillStyle = 'rgba(5,7,12,.82)';
+      context.strokeStyle = colorHex === 0xff6b35 ? '#ffb088' : '#7cecff';
+      context.lineWidth = 4;
+      context.roundRect(8, 8, 496, 144, 18);
+      context.fill();
+      context.stroke();
+      context.fillStyle = '#fff7ef';
+      context.font = '900 40px Inter, sans-serif';
+      context.textAlign = 'center';
+      context.fillText(label, 256, 98);
+      const texture = new THREE.CanvasTexture(canvas);
+      const labelMesh = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+      labelMesh.scale.set(2.1, .66, 1);
+      labelMesh.position.y = 1.78;
+      group.add(labelMesh);
+      scene.add(group);
+      return group;
+    };
+
+    const startPin = makePin('LIVE LOCATION', routePoints[0], 0x7cecff);
+    const endPin = makePin('SION SPACES', routePoints.at(-1), 0xff6b35);
+
+    const makeStatusSprite = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const texture = new THREE.CanvasTexture(canvas);
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+      sprite.scale.set(1.55, 1.55, 1);
+      sprite.position.copy(routePoints.at(-1));
+      sprite.position.y += 2.75;
+      scene.add(sprite);
+
+      return { canvas, texture, sprite };
+    };
+
+    const statusSprite = makeStatusSprite();
+
+    const drawStatusSprite = (isGood) => {
+      const context = statusSprite.canvas.getContext('2d');
+      context.clearRect(0, 0, 512, 512);
+      context.fillStyle = isGood ? 'rgba(74,255,154,.18)' : 'rgba(255,64,64,.2)';
+      context.strokeStyle = isGood ? '#4aff9a' : '#ff4040';
+      context.lineWidth = 22;
+      context.beginPath();
+      context.arc(256, 256, 190, 0, Math.PI * 2);
+      context.fill();
+      context.stroke();
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+      context.lineWidth = 34;
+      context.beginPath();
+      if (isGood) {
+        context.moveTo(154, 260);
+        context.lineTo(226, 330);
+        context.lineTo(366, 180);
+      } else {
+        context.moveTo(174, 174);
+        context.lineTo(338, 338);
+        context.moveTo(338, 174);
+        context.lineTo(174, 338);
+      }
+      context.stroke();
+      statusSprite.texture.needsUpdate = true;
+    };
+
+    const traveler = new THREE.Mesh(
+      new THREE.SphereGeometry(.16, 32, 32),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x7cecff, emissiveIntensity: 3 }),
+    );
+    scene.add(traveler);
+
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(5.85, .01, 8, 180),
+      new THREE.MeshBasicMaterial({ color: 0x7cecff, transparent: true, opacity: .28 }),
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = .12;
+    scene.add(ring);
+
+    let routeTime = 0;
+    let routeSpeed = .055;
+    let isCleared = true;
+    const missionStatus = document.querySelector('#missionStatus');
+    const missionCopy = document.querySelector('#missionCopy');
+    const setMissionState = (nextCleared, etaText, deltaText) => {
+      isCleared = nextCleared;
+      missionStatus.classList.toggle('good', nextCleared);
+      missionStatus.classList.toggle('bad', !nextCleared);
+      missionStatus.querySelector('strong').textContent = nextCleared ? '✓ CLEARED' : '✕ TOO LATE';
+      missionCopy.textContent = `ETA ${etaText}. ${deltaText}`;
+      const color = nextCleared ? 0x4aff9a : 0xff4040;
+      routeMaterial.color.setHex(color);
+      routeMaterial.emissive.setHex(color);
+      routeGlowMaterial.color.setHex(color);
+      drawStatusSprite(nextCleared);
+      routeTime = 0;
+      routeSpeed = nextCleared ? .07 : .035;
+    };
+
+    const replay = () => {
+      routeTime = 0;
+    };
+
+    drawStatusSprite(true);
+    document.querySelector('#replay').addEventListener('click', replay);
+    document.querySelector('#early').addEventListener('click', () => {
+      setMissionState(true, '21:32', 'You beat lockdown by 13 minutes.');
+    });
+    document.querySelector('#late').addEventListener('click', () => {
+      setMissionState(false, '21:52', 'Surprise compromised. Venue goes red.');
+    });
+    document.querySelector('#reset').addEventListener('click', () => {
+      camera.position.set(8.8, 7.2, 9.6);
+      controls.target.set(0, .2, 0);
+      controls.update();
+    });
+
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+      const elapsed = clock.getElapsedTime();
+      routeTime = (routeTime + clock.getDelta() * routeSpeed) % 1;
+      traveler.position.copy(routeCurve.getPointAt(routeTime));
+      traveler.position.y += .28 + Math.sin(elapsed * 6) * .035;
+      traveler.material.emissive.setHex(isCleared ? 0x4aff9a : 0xff4040);
+      traveler.material.color.setHex(isCleared ? 0xffffff : 0xffd0d0);
+      startPin.rotation.y = Math.sin(elapsed * .5) * .08;
+      endPin.rotation.y = Math.sin(elapsed * .6 + 1) * .08;
+      ring.rotation.z += .002;
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+
+    const resize = () => {
+      camera.aspect = mount.clientWidth / mount.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+    };
+
+    window.addEventListener('resize', resize);
+    animate();
+  </script>
+</body>
+</html>

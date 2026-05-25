@@ -1,0 +1,4 @@
+[     396ms] [WARNING] Manifest: property 'start_url' ignored, should be same origin as document. @ https://cdn.evbstatic.com/s3-build/perm_001/befbf7/django/images/favicons/manifest.webmanifest:0
+[     396ms] [WARNING] Manifest: property 'scope' ignored. Start url should be within scope of scope URL. @ https://cdn.evbstatic.com/s3-build/perm_001/befbf7/django/images/favicons/manifest.webmanifest:0
+[     692ms] [LOG] Regime detected is gdpr, loading transcend @ :3
+[    1826ms] [LOG] Sync done via valkriye: Show banner @ :10
