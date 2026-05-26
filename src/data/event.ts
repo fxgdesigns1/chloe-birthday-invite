@@ -19,10 +19,12 @@ export const cinematicAssets = {
   introVideo: './assets/media/intro/chloe-welcome.mp4',
   introPoster: './assets/media/intro/chloe-welcome-preview.gif',
   floralBackdrop: './assets/media/floral/chloe-floral-bloom.png',
+  floralLoop: './assets/media/floral/chloe-floral-loop.mp4',
   waterVideo: './assets/media/water/chloe-floating-water.mp4',
   waterPoster: './assets/media/water/chloe-floating-water-preview.gif',
   waterPortrait: './assets/media/water/chloe-floating-portrait.jpg',
   editorialPortrait: './assets/media/editorial/chloe-editorial-regal.jpg',
+  editorialCutout: './assets/media/editorial/chloe-editorial-cutout.png',
   sourcePortrait: './assets/media/editorial/chloe-source-screenshot.jpg',
 } as const;
 

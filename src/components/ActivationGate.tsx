@@ -11,7 +11,17 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
   return (
     <section className={`activation-gate ${active ? 'is-active' : 'is-exiting'}`} aria-hidden={!active}>
       <div className="floral-atmosphere floral-atmosphere--gate" aria-hidden="true">
-        <img className="gate-floral" src={cinematicAssets.floralBackdrop} alt="" />
+        <img className="gate-floral gate-floral--fallback" src={cinematicAssets.floralBackdrop} alt="" />
+        <video
+          className="gate-floral-loop"
+          src={cinematicAssets.floralLoop}
+          poster={cinematicAssets.floralBackdrop}
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+        />
         <div className="floral-grade" />
       </div>
       <div className="gate-grade" />
@@ -30,10 +40,8 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
           </p>
         </div>
         <div className="invitation-seal" aria-hidden="true">
-          <img src={cinematicAssets.editorialPortrait} alt="" />
-          <span className="seal-ring seal-ring--outer" />
-          <span className="seal-ring seal-ring--inner" />
-          <span className="seal-mark">C</span>
+          <div className="portrait-light-wrap" />
+          <img src={cinematicAssets.editorialCutout} alt="" />
         </div>
       </div>
       <div className="access-dock">
