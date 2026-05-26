@@ -18,6 +18,7 @@ export const imageFragments = Array.from(
 export const cinematicAssets = {
   introVideo: './assets/media/intro/chloe-welcome.mp4',
   introPoster: './assets/media/intro/chloe-welcome-preview.gif',
+  floralBackdrop: './assets/media/floral/chloe-floral-bloom.png',
   waterVideo: './assets/media/water/chloe-floating-water.mp4',
   waterPoster: './assets/media/water/chloe-floating-water-preview.gif',
   waterPortrait: './assets/media/water/chloe-floating-portrait.jpg',

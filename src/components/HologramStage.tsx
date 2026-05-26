@@ -83,16 +83,14 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
 
   return (
     <section className={`hologram-stage ${active ? 'is-active' : ''}`} ref={shellRef} aria-hidden={!active}>
-      <video
-        className="stage-water"
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={cinematicAssets.waterPoster}
-        src={cinematicAssets.waterVideo}
-      />
+      <img className="stage-floral" src={cinematicAssets.floralBackdrop} alt="" />
       <div className="stage-grade" />
+      <div className="petal-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <div className="premiere-layout">
         <div className="premiere-copy">
           <p className="chapter-kicker">Chapter I / The Whisper</p>

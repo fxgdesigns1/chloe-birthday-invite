@@ -73,7 +73,7 @@ video {
   z-index: 20;
   min-height: 100vh;
   overflow: hidden;
-  background: #030303;
+  background: #fff0df;
   transition:
     opacity 360ms ease,
     visibility 360ms ease;
@@ -87,13 +87,21 @@ video {
 }
 
 .gate-film,
+.gate-floral,
 .stage-water,
+.stage-floral,
 .water-film {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.gate-floral,
+.stage-floral {
+  filter: saturate(1.06) contrast(1.02) brightness(1.02);
+  transform: scale(1.025);
 }
 
 .gate-film {
@@ -112,6 +120,69 @@ video {
     linear-gradient(180deg, rgba(3, 3, 3, 0.16), rgba(3, 3, 3, 0.86)),
     radial-gradient(circle at 72% 24%, rgba(255, 107, 53, 0.24), transparent 24rem),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 8px);
+}
+
+.gate-grade,
+.stage-grade {
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.72), rgba(255, 241, 218, 0.5) 18rem, transparent 31rem),
+    radial-gradient(circle at 16% 16%, rgba(255, 255, 255, 0.34), transparent 20rem),
+    radial-gradient(circle at 84% 82%, rgba(255, 126, 121, 0.3), transparent 24rem),
+    linear-gradient(180deg, rgba(65, 20, 34, 0.06), rgba(75, 28, 34, 0.3));
+}
+
+.petal-field,
+.petal-field span {
+  position: absolute;
+  pointer-events: none;
+}
+
+.petal-field {
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.petal-field span {
+  width: clamp(50px, 7vw, 96px);
+  aspect-ratio: 1.45;
+  border-radius: 999px 999px 999px 180px;
+  background:
+    radial-gradient(circle at 34% 32%, rgba(255, 255, 255, 0.76), transparent 34%),
+    linear-gradient(135deg, rgba(255, 227, 210, 0.62), rgba(255, 101, 137, 0.34));
+  box-shadow: 0 18px 54px rgba(255, 104, 98, 0.18);
+  filter: blur(0.2px);
+  opacity: 0.58;
+  transform: rotate(var(--petal-rotate, 0deg));
+  animation: petal-drift var(--petal-speed, 12s) ease-in-out infinite alternate;
+}
+
+.petal-field span:nth-child(1) {
+  left: 8%;
+  top: 18%;
+  --petal-rotate: -22deg;
+  --petal-speed: 13s;
+}
+
+.petal-field span:nth-child(2) {
+  right: 10%;
+  top: 14%;
+  --petal-rotate: 34deg;
+  --petal-speed: 15s;
+}
+
+.petal-field span:nth-child(3) {
+  bottom: 13%;
+  left: 16%;
+  --petal-rotate: 18deg;
+  --petal-speed: 11s;
+}
+
+.petal-field span:nth-child(4) {
+  right: 15%;
+  bottom: 16%;
+  --petal-rotate: -38deg;
+  --petal-speed: 14s;
 }
 
 .gate-editorial {
@@ -164,6 +235,17 @@ video {
   text-shadow: 0 22px 80px rgba(0, 0, 0, 0.44);
 }
 
+.activation-gate .chapter-kicker,
+.hologram-stage .chapter-kicker {
+  color: #a33134;
+}
+
+.gate-copy h1,
+.premiere-copy h2 {
+  color: #4a1515;
+  text-shadow: 0 22px 80px rgba(255, 255, 255, 0.44);
+}
+
 .gate-copy h1,
 .hero-copy h1 {
   max-width: 880px;
@@ -187,6 +269,11 @@ video {
   color: var(--muted);
   font-size: clamp(1rem, 1.55vw, 1.2rem);
   line-height: 1.58;
+}
+
+.gate-copy p:not(.chapter-kicker),
+.premiere-copy p {
+  color: rgba(73, 20, 21, 0.82);
 }
 
 .invitation-seal {
@@ -254,10 +341,11 @@ video {
   justify-content: space-between;
   gap: 18px;
   padding: 12px;
-  border: 1px solid rgba(255, 247, 238, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 8px;
-  background: rgba(6, 7, 9, 0.72);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 245, 235, 0.58);
+  backdrop-filter: blur(18px) saturate(1.12);
+  box-shadow: 0 24px 76px rgba(120, 45, 45, 0.2);
   transform: translateX(-50%);
 }
 
@@ -270,13 +358,13 @@ video {
 
 .access-dock span,
 .system-readout span {
-  color: rgba(255, 247, 238, 0.62);
+  color: rgba(73, 20, 21, 0.72);
   font-size: 0.72rem;
   font-weight: 800;
 }
 
 .access-dock strong {
-  color: var(--ivory);
+  color: #4a1515;
   font-size: 0.95rem;
 }
 
@@ -330,6 +418,7 @@ video {
   gap: 6px;
   max-width: min(360px, calc(100vw - 32px));
   text-align: right;
+  text-shadow: 0 2px 18px rgba(255, 255, 255, 0.52);
 }
 
 .audio-warning,
@@ -1101,6 +1190,16 @@ video {
 @keyframes ring-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes petal-drift {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 12px -18px;
   }
 }
 

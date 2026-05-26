@@ -10,22 +10,20 @@ type ActivationGateProps = {
 export function ActivationGate({ active, audioError, onActivate }: ActivationGateProps) {
   return (
     <section className={`activation-gate ${active ? 'is-active' : 'is-exiting'}`} aria-hidden={!active}>
-      <video
-        className="gate-film"
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={cinematicAssets.waterPoster}
-        src={cinematicAssets.waterVideo}
-      />
+      <img className="gate-floral" src={cinematicAssets.floralBackdrop} alt="" />
       <div className="gate-grade" />
+      <div className="petal-field" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <div className="gate-editorial">
         <div className="gate-copy">
-          <p className="chapter-kicker">Private birthday reveal</p>
-          <h1>The room opens for Chloe.</h1>
+          <p className="chapter-kicker">Private birthday bloom</p>
+          <h1>Chloe's message is ready.</h1>
           <p>
-            A secret film, a hidden address, and one beautiful instruction: arrive early enough for the silence.
+            A bright birthday opening, a secret welcome film, and one beautiful instruction: keep the surprise sealed.
           </p>
         </div>
         <div className="invitation-seal" aria-hidden="true">
@@ -42,14 +40,14 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
         </div>
         <button className="link-node" type="button" onClick={onActivate}>
           <LockKeyhole aria-hidden="true" size={20} />
-          <span>Unlock the invitation</span>
+          <span>Open Chloe's Message</span>
           <Sparkles aria-hidden="true" size={18} />
         </button>
       </div>
       <div className="system-readout">
-        <span>Surprise sealed</span>
+        <span>Birthday bloom</span>
         <span>Welcome film live</span>
-        <span>Hannah RSVP ready</span>
+        <span>Surprise sealed</span>
       </div>
       {audioError ? <p className="audio-warning">{audioError}</p> : null}
     </section>
