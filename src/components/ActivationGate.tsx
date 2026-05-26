@@ -10,7 +10,10 @@ type ActivationGateProps = {
 export function ActivationGate({ active, audioError, onActivate }: ActivationGateProps) {
   return (
     <section className={`activation-gate ${active ? 'is-active' : 'is-exiting'}`} aria-hidden={!active}>
-      <img className="gate-floral" src={cinematicAssets.floralBackdrop} alt="" />
+      <div className="floral-atmosphere floral-atmosphere--gate" aria-hidden="true">
+        <img className="gate-floral" src={cinematicAssets.floralBackdrop} alt="" />
+        <div className="floral-grade" />
+      </div>
       <div className="gate-grade" />
       <div className="petal-field" aria-hidden="true">
         <span />
@@ -21,9 +24,9 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
       <div className="gate-editorial">
         <div className="gate-copy">
           <p className="chapter-kicker">Private birthday bloom</p>
-          <h1>Chloe's message is ready.</h1>
+          <h1>Chloe's birthday blooms.</h1>
           <p>
-            A bright birthday opening, a secret welcome film, and one beautiful instruction: keep the surprise sealed.
+            A bright birthday opening, a secret welcome film, and one beautiful instruction: keep Chloe's reveal sealed.
           </p>
         </div>
         <div className="invitation-seal" aria-hidden="true">
@@ -47,7 +50,7 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
       <div className="system-readout">
         <span>Birthday bloom</span>
         <span>Welcome film live</span>
-        <span>Surprise sealed</span>
+        <span>Birthday music ready</span>
       </div>
       {audioError ? <p className="audio-warning">{audioError}</p> : null}
     </section>

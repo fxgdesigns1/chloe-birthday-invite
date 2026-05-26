@@ -83,7 +83,10 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
 
   return (
     <section className={`hologram-stage ${active ? 'is-active' : ''}`} ref={shellRef} aria-hidden={!active}>
-      <img className="stage-floral" src={cinematicAssets.floralBackdrop} alt="" />
+      <div className="floral-atmosphere floral-atmosphere--premiere" aria-hidden="true">
+        <img className="stage-floral" src={cinematicAssets.floralBackdrop} alt="" />
+        <div className="floral-grade" />
+      </div>
       <div className="stage-grade" />
       <div className="petal-field" aria-hidden="true">
         <span />
@@ -93,7 +96,7 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
       </div>
       <div className="premiere-layout">
         <div className="premiere-copy">
-          <p className="chapter-kicker">Chapter I / The Whisper</p>
+          <p className="chapter-kicker">Chapter I / A Welcome For Chloe</p>
           <h2>Chloe appears before the address does.</h2>
           <p>{transmission.secretLine}</p>
           <div className="transmission-actions">

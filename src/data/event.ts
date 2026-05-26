@@ -33,6 +33,12 @@ export const contactPayload = {
     "https://wa.me/447944545322?text=Hi%20Hannah%2C%20please%20add%20my%20guest%20names%20to%20Chloe's%20birthday%20guestlist.",
 } as const;
 
+export const rsvpPayload = {
+  eventId: '1989983650668',
+  ticketUrl:
+    'https://www.eventbrite.co.uk/e/chloe-secret-birthday-soiree-tickets-1989983650668?utm-campaign=social&utm-content=attendeeshare&utm-medium=discovery&utm-source=wa&utm-term=checkoutwidget',
+} as const;
+
 const encodedVenue = 'Sion%20Spaces%2C%20426-428%20Streatham%20High%20Road%2C%20London%20SW16%203PX';
 
 export const mapPayload = {
@@ -46,39 +52,39 @@ export const mapPayload = {
 
 export const luxuryDirection = {
   mood: 'private luxury editorial reveal with museum-grade restraint',
-  motion: 'tilt-shift scroll depth, cinematic parallax, and full-bleed chapter reveals',
+  motion: 'floral bloom motion, cinematic parallax, and full-bleed birthday reveals',
   typography: 'high-contrast editorial display type with compact luxury interface labels',
 } as const;
 
 export const editorialChapters = [
   {
     eyebrow: 'Chapter I',
-    title: 'The Whisper',
-    copy: 'Chloe opens the invitation in a private welcome film. Watch it, keep it quiet, then step through.',
+    title: 'A Welcome For Chloe',
+    copy: "Chloe opens the invitation with her private welcome film. Watch it, smile, and keep the love sealed until she walks in.",
     asset: cinematicAssets.introVideo,
   },
   {
     eyebrow: 'Chapter II',
-    title: 'The Water Room',
-    copy: 'A tilt-shift water chapter turns cyan light, orange fabric, and slow motion into the dress-code mood.',
+    title: 'Birthday Glow',
+    copy: 'This room is for Chloe: warm flowers, bright fits, full hearts, and the kind of entrance she deserves.',
     asset: cinematicAssets.waterPortrait,
   },
   {
     eyebrow: 'Chapter III',
-    title: 'The Arrival Lock',
-    copy: 'The room holds its breath until Chloe arrives. No late entrances. No spoilers. Just the reveal.',
+    title: 'The Surprise Moment',
+    copy: 'Hold the hush, save the cheers, and let Chloe feel every bit of the love when the reveal lands.',
     asset: cinematicAssets.editorialPortrait,
   },
   {
     eyebrow: 'Chapter IV',
-    title: 'The Hidden Address',
-    copy: 'Sion Spaces, inside Black Kitchen. The map stays cinematic, but the route is one tap away.',
+    title: 'Where We Gather',
+    copy: 'Sion Spaces, inside Black Kitchen. Come ready to celebrate Chloe, and keep the route close until you arrive.',
     asset: cinematicAssets.sourcePortrait,
   },
   {
     eyebrow: 'Final Chapter',
-    title: 'The List',
-    copy: 'RSVP with Hannah on WhatsApp. The guest list closes when the surprise timeline begins.',
+    title: 'Save Your Place',
+    copy: "RSVP through Eventbrite so your name is ready on Chloe's birthday list before the surprise timeline begins.",
     asset: cinematicAssets.sourcePortrait,
   },
 ] as const;
@@ -87,7 +93,7 @@ export const transmission = {
   videoSource: cinematicAssets.introVideo,
   posterSource: cinematicAssets.introPoster,
   secretLine:
-    'A private welcome from Chloe, then the invite unlocks. Keep the room quiet until she walks in.',
+    'A private welcome from Chloe, then the birthday invite opens. Keep the room quiet until she walks in.',
 } as const;
 
 export const celebrationTimeline = [

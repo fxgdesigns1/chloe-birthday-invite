@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   cinematicAssets,
@@ -9,6 +9,7 @@ import {
   imageFragments,
   luxuryDirection,
   mapPayload,
+  rsvpPayload,
 } from './event';
 
 describe('event payload', () => {
@@ -33,10 +34,12 @@ describe('event payload', () => {
   it('exposes the cinematic media supplied for the invite', () => {
     expect(cinematicAssets.introVideo).toBe('./assets/media/intro/chloe-welcome.mp4');
     expect(cinematicAssets.introPoster).toBe('./assets/media/intro/chloe-welcome-preview.gif');
+    expect(cinematicAssets.floralBackdrop).toBe('./assets/media/floral/chloe-floral-bloom.png');
     expect(cinematicAssets.waterVideo).toBe('./assets/media/water/chloe-floating-water.mp4');
     expect(cinematicAssets.waterPoster).toBe('./assets/media/water/chloe-floating-water-preview.gif');
     expect(cinematicAssets.waterPortrait).toBe('./assets/media/water/chloe-floating-portrait.jpg');
     expect(cinematicAssets.editorialPortrait).toBe('./assets/media/editorial/chloe-editorial-regal.jpg');
+    expect(existsSync(join(process.cwd(), 'public/assets/media/floral/chloe-floral-bloom.png'))).toBe(true);
   });
 
   it('restores Hannah as the WhatsApp RSVP contact', () => {
@@ -44,6 +47,18 @@ describe('event payload', () => {
     expect(contactPayload.displayPhone).toBe('07944545322');
     expect(contactPayload.whatsappUrl).toContain('https://wa.me/447944545322');
     expect(decodeURIComponent(contactPayload.whatsappUrl)).toContain("Chloe's birthday guestlist");
+  });
+
+  it('uses the direct Eventbrite checkout as the RSVP destination', () => {
+    const rsvpSource = readFileSync(join(process.cwd(), 'src/components/RsvpPanel.tsx'), 'utf8');
+
+    expect(rsvpPayload.eventId).toBe('1989983650668');
+    expect(rsvpPayload.ticketUrl).toContain('chloe-secret-birthday-soiree-tickets-1989983650668');
+    expect(rsvpSource).not.toContain('EBWidgets.createWidget');
+    expect(rsvpSource).not.toContain('iframe');
+    expect(rsvpSource).toContain('Open Eventbrite RSVP');
+    expect(rsvpSource).not.toContain('submitRsvp');
+    expect(rsvpSource).not.toContain('Message Hannah on WhatsApp');
   });
 
   it('keeps a no-key map directions URL for the venue', () => {
@@ -56,25 +71,41 @@ describe('event payload', () => {
   it('defines a revolutionary editorial direction based on the supplied reference video', () => {
     expect(luxuryDirection).toEqual({
       mood: 'private luxury editorial reveal with museum-grade restraint',
-      motion: 'tilt-shift scroll depth, cinematic parallax, and full-bleed chapter reveals',
+      motion: 'floral bloom motion, cinematic parallax, and full-bleed birthday reveals',
       typography: 'high-contrast editorial display type with compact luxury interface labels',
     });
   });
 
-  it('maps the invite into premium editorial chapters with sharper titles', () => {
+  it('maps the invite into warm Chloe birthday chapters without placeholder copy', () => {
     expect(editorialChapters.map((chapter) => chapter.title)).toEqual([
-      'The Whisper',
-      'The Water Room',
-      'The Arrival Lock',
-      'The Hidden Address',
-      'The List',
+      'A Welcome For Chloe',
+      'Birthday Glow',
+      'The Surprise Moment',
+      'Where We Gather',
+      'Save Your Place',
     ]);
-    expect(editorialChapters[1].copy).toContain('tilt-shift');
+    expect(editorialChapters[1].copy).toContain('This room is for Chloe');
+    expect(editorialChapters[2].copy).toContain('love');
     expect(editorialChapters[3].copy).toContain('Black Kitchen');
+    expect(editorialChapters.map((chapter) => `${chapter.title} ${chapter.copy}`).join(' ')).not.toContain('Water Room');
+    expect(editorialChapters.map((chapter) => chapter.copy).join(' ')).not.toContain('tilt-shift');
+    expect(editorialChapters.map((chapter) => chapter.copy).join(' ')).not.toContain('dress-code mood');
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.introVideo);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.waterPortrait);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.editorialPortrait);
     expect(editorialChapters.map((chapter) => chapter.asset)).toContain(cinematicAssets.sourcePortrait);
+  });
+
+  it('renders a touched-up animated floral atmosphere behind the opening stages', () => {
+    const activationSource = readFileSync(join(process.cwd(), 'src/components/ActivationGate.tsx'), 'utf8');
+    const hologramSource = readFileSync(join(process.cwd(), 'src/components/HologramStage.tsx'), 'utf8');
+    const stylesSource = readFileSync(join(process.cwd(), 'src/styles.css'), 'utf8');
+
+    expect(activationSource).toContain('floral-atmosphere');
+    expect(hologramSource).toContain('floral-atmosphere');
+    expect(stylesSource).toContain('@keyframes floral-drift');
+    expect(stylesSource).toContain('@keyframes petal-drift');
+    expect(stylesSource).toContain('prefers-reduced-motion: reduce');
   });
 
   it('removes the bottom memory gallery from the invitation page', () => {

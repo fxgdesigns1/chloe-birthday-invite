@@ -19,8 +19,8 @@ export default function App() {
     try {
       ambienceRef.current = await unlockAmbientLoop();
     } catch (error) {
-      console.warn('Ambient audio unavailable', error);
-      setAudioError('Ambient channel unavailable. Visual link remains active.');
+      console.warn('Birthday music unavailable', error);
+      setAudioError('Music channel unavailable. Visual link remains active.');
     }
 
     setStage('hologram');
