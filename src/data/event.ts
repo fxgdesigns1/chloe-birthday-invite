@@ -25,6 +25,7 @@ export const cinematicAssets = {
   waterPortrait: './assets/media/water/chloe-floating-portrait.jpg',
   editorialPortrait: './assets/media/editorial/chloe-editorial-regal.jpg',
   editorialCutout: './assets/media/editorial/chloe-editorial-cutout.png',
+  hairlineBloomCover: './assets/media/editorial/chloe-hairline-bloom-cover.png',
   sourcePortrait: './assets/media/editorial/chloe-source-screenshot.jpg',
 } as const;
 

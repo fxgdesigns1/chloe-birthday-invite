@@ -331,16 +331,40 @@ video {
   isolation: isolate;
 }
 
-.invitation-seal img {
+.portrait-stack {
   position: relative;
   z-index: 2;
   width: min(520px, 86vw);
+  display: grid;
+  place-items: center;
+}
+
+.chloe-cutout {
+  position: relative;
+  z-index: 2;
+  width: 100%;
   max-height: min(72vh, 720px);
   object-fit: contain;
   object-position: center bottom;
   filter:
     drop-shadow(0 34px 56px rgba(82, 23, 27, 0.3))
     drop-shadow(0 0 36px rgba(255, 238, 219, 0.38));
+}
+
+.hairline-bloom-cover {
+  position: absolute;
+  top: -2.8%;
+  right: 2%;
+  z-index: 3;
+  width: 34%;
+  max-width: 180px;
+  pointer-events: none;
+  transform: rotate(7deg);
+  transform-origin: 45% 55%;
+  filter:
+    drop-shadow(0 16px 18px rgba(83, 34, 24, 0.12))
+    drop-shadow(0 0 24px rgba(255, 238, 216, 0.24));
+  mask-image: radial-gradient(ellipse at 50% 50%, #000 0 58%, transparent 79%);
 }
 
 .portrait-light-wrap {
@@ -1230,7 +1254,7 @@ video {
     min-height: 440px;
   }
 
-  .invitation-seal img {
+  .portrait-stack {
     width: min(460px, 78vw);
   }
 
@@ -1277,9 +1301,18 @@ video {
     margin-top: -10px;
   }
 
-  .invitation-seal img {
+  .portrait-stack {
     width: min(250px, 68vw);
+  }
+
+  .chloe-cutout {
     max-height: 30svh;
+  }
+
+  .hairline-bloom-cover {
+    top: -3%;
+    right: 4%;
+    width: 36%;
   }
 
   .gate-copy h1 {
@@ -1421,9 +1454,17 @@ video {
     min-height: 0;
   }
 
-  .invitation-seal img {
+  .portrait-stack {
     width: min(190px, 24vw);
+  }
+
+  .chloe-cutout {
     max-height: 58svh;
+  }
+
+  .hairline-bloom-cover {
+    right: 3%;
+    width: 36%;
   }
 
   .access-dock {
@@ -1483,7 +1524,7 @@ video {
     font-size: 0.84rem;
   }
 
-  .invitation-seal img {
+  .chloe-cutout {
     max-height: 52svh;
   }
 

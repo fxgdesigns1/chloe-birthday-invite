@@ -41,7 +41,10 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
         </div>
         <div className="invitation-seal" aria-hidden="true">
           <div className="portrait-light-wrap" />
-          <img src={cinematicAssets.editorialCutout} alt="" />
+          <div className="portrait-stack">
+            <img className="chloe-cutout" src={cinematicAssets.editorialCutout} alt="" />
+            <img className="hairline-bloom-cover" src={cinematicAssets.hairlineBloomCover} alt="" />
+          </div>
         </div>
       </div>
       <div className="access-dock">
