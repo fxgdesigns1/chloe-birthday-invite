@@ -54,6 +54,7 @@ export function ActivationGate({ active, audioError, onActivate }: ActivationGat
           <span>Open Chloe's Message</span>
           <Sparkles aria-hidden="true" size={18} />
         </button>
+        <p className="orientation-hint">Best viewed sideways if your screen feels tight.</p>
       </div>
       <div className="system-readout">
         <span>Birthday bloom</span>

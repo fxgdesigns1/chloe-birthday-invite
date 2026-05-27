@@ -16,14 +16,14 @@ export default function App() {
       return;
     }
 
+    setStage('hologram');
+
     try {
       ambienceRef.current = await unlockAmbientLoop();
     } catch (error) {
       console.warn('Birthday music unavailable', error);
       setAudioError('Music channel unavailable. Visual link remains active.');
     }
-
-    setStage('hologram');
   };
 
   return (

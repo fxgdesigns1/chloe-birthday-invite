@@ -115,7 +115,7 @@ export function HologramStage({ active, onComplete }: HologramStageProps) {
             ) : null}
             <button className="mini-action" type="button" onClick={completeTransmission}>
               <SkipForward aria-hidden="true" size={16} />
-              <span>Reveal the room</span>
+              <span>Continue to invite</span>
             </button>
           </div>
         </div>
